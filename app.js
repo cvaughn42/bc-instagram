@@ -1,6 +1,7 @@
 // Import Express library
 var express = require('express');
 var app = express();
+var dbManager = require("./DbManager")();
 
 // Import path library
 var path = require('path');
