@@ -42,7 +42,7 @@
                         <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
-                        <form role="form" action="/login" method="POST">
+                        <form role="form" id="loginForm" action="/login" method="POST">
                             <fieldset>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="User Name" id="userName" name="userName" maxlength="20" autofocus />
@@ -54,7 +54,7 @@
                                     <a href="/register">Register</a>
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
-                                <input type="submit" id="submitButton" name="submitButton" value="Login" class="btn btn-lg btn-success btn-block" />
+                                <input type="button" id="submitButton" name="submitButton" value="Login" class="btn btn-lg btn-success btn-block" />
                             </fieldset>
                         </form>
                     </div>
@@ -74,6 +74,36 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="/js/sb-admin-2.js"></script>
+
+<script>
+$().ready(() => {
+$("#submitButton").click(() => {
+ // Use AJAX to post the object to our adduser service
+        $.ajax({
+            type: 'POST',
+            data: { userName: $("#userName").val(), password: $("#password").val()},
+            url: '/login',
+            dataType: 'JSON'
+        }).done(function( response ) {
+            // Check for successful (blank) response
+            if (response.msg) {
+
+                // If something goes wrong, alert the error message that our service returned
+                alert('Error: ' + response.msg);
+
+            }
+            else {
+                window.location.replace("/");
+                // Clear the form inputs
+                //$('#addUser fieldset input').val('');
+
+                // Update the table
+                //populateTable();
+            }
+        });
+});
+});
+</script>
 
 </body>
 

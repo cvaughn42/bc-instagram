@@ -54,21 +54,26 @@ app.get('/', checkAuth, function (req, res) {
                 firstName: userObject.first_name,
                 lastName: userObject.last_name
             };
+            res.json(userObject);
+            //res.redirect('/');
         }
         else {
             // TODO: Show error to user
             console.log(err);
+            res.json({ msg : err });
         }
     });
-    res.redirect('/');
+
+    // not needed for ajax calls
+    //res.redirect('/');
 
 
 }).get('/register', function (req, res) {
 
     res.sendFile(path.join(__dirname + "/register.html"));
 }).post('/register', function (req, res) {
-  
-     console.dir(req.body);
+
+    console.dir(req.body);
     dbManager.insertUser(req.body.userName, req.body.password, req.body.firstName, req.body.middleName, req.body.lastName, function (err, userObject) {
         if (userObject != null) {
             req.session.currentUser = {
@@ -76,14 +81,15 @@ app.get('/', checkAuth, function (req, res) {
                 firstName: userObject.first_name,
                 lastName: userObject.last_name
             };
+            res.redirect('/');
         }
         else {
             // TODO: Show error to user
             console.log(err);
+            res.redirect('/register');
         }
     });
 
-    res.redirect('/');
 });
 
 var server = app.listen(port, function () {
