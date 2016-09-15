@@ -55,6 +55,49 @@ module.exports = function (doRunCreateTables = true) {
         });
     }
 
+    /*
+     * return callback(err, isSuccess)
+     */
+    this.insertPost = function (authorUserName, binaryImage, imageType, description, callback) {
+        db.serialize(() => {
+            var stmt = db.prepare("INSERT INTO post (author, image, type, description, post_date) VALUES (?, ?, ?, ?, ?)");
+            stmt.run(authorUserName, binaryImage, imageType, description, Date.now(), (err) => {
+                if (err) {
+                    callback(err, false);
+                } else {
+                    callback(null, true);
+                }
+            });
+            stmt.finalize();
+        });
+    }
+
+    /*
+     * return callback(err, rows)
+     */
+    this.getPostsByUserName = function (userName, callback) {
+        db.all("SELECT * FROM post WHERE author = ?", userName, (err, rows) => {
+            if (err || rows == undefined) {
+                callback(err, null);
+            } else {
+                callback(null, rows);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, row)
+     */
+    this.getPostById = function (id, callback) {
+        db.get("SELECT * FROM post WHERE post_id = ?", id, (err, row) => {
+            if (err || row == undefined) {
+                callback(err, null);
+            } else {
+                callback(null, row);
+            }
+        });
+    }
+
     return this;
 }
 
