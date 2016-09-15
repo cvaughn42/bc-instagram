@@ -26,29 +26,30 @@ module.exports = function (doRunCreateTables = true) {
     }
 
     /*
-     * return user object if found and null if not
+     * return callback(err, row)
      */
     this.verifyUserAndPassword = function (userName, password, callback) {
         db.get("SELECT * FROM user WHERE user_name = ? and password = ?", userName, password, (err, row) => {
             if (err || row == undefined) {
-                callback(null);
+                callback(err, null);
             } else {
-                callback(row);
+                callback(null, row);
             }
         });
     }
 
     /*
-     * return "true" if successfully insert data and "false" if not
+     * return callback(err, isSuccess)
      */
     this.insertUser = function (userName, password, firstName, middleName, lastName, callback) {
-        db.serialize(function () {
+        db.serialize(() => {
             var stmt = db.prepare("INSERT INTO user (user_name, password, first_name, middle_name, last_name) VALUES (?, ?, ?, ?, ?)");
             stmt.run(userName, password, firstName, middleName, lastName, (err) => {
                 if (err) {
-                    console.log(err);
+                    callback(err, false);
+                } else {
+                    callback(null, true);
                 }
-                callback(!err ? true : false);
             });
             stmt.finalize();
         });
