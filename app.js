@@ -67,7 +67,21 @@ app.get('/', checkAuth, function (req, res) {
 
     res.sendFile(path.join(__dirname + "/register.html"));
 }).post('/register', function (req, res) {
-    console.dir(req.body);
+  
+     console.dir(req.body);
+    dbManager.insertUser(req.body.userName, req.body.password, req.body.firstName, req.body.middleName, req.body.lastName, function (err, userObject) {
+        if (userObject != null) {
+            req.session.currentUser = {
+                userName: userObject.user_name,
+                firstName: userObject.first_name,
+                lastName: userObject.last_name
+            };
+        }
+        else {
+            // TODO: Show error to user
+            console.log(err);
+        }
+    });
 
     res.redirect('/');
 });
