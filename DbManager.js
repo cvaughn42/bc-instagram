@@ -26,10 +26,16 @@ module.exports = function (doRunCreateTables = true) {
     }
 
     /*
-     *
+     * return user object if found and null if not
      */
-    this.verifyUserAndPassword = function(userName, password) {
-
+    this.verifyUserAndPassword = function (userName, password, callback) {
+        db.get("SELECT * FROM user WHERE user_name = ? and password = ?", userName, password, (err, row) => {
+            if (err || row == undefined) {
+                callback(null);
+            } else {
+                callback(row);
+            }
+        });
     }
 
     /*
