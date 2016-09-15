@@ -1,4 +1,4 @@
-CREATE TABLE user
+CREATE TABLE IF NOT EXIST user
 (
     user_name VARCHAR(20) NOT NULL PRIMARY KEY,
     password VARCHAR(20) NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE user
     last_name VARCHAR(20)
 );
 
-CREATE TABLE user_follow
+CREATE TABLE IF NOT EXIST user_follow
 (
     user_name VARCHAR(20) NOT NULL,
     following_user_name VARCHAR(20) NOT NULL,
@@ -15,10 +15,10 @@ CREATE TABLE user_follow
     FOREIGN KEY (following_user_name) REFERENCES user (user_name) 
 );
 
-CREATE UNIQUE INDEX user_follow_idx
+CREATE UNIQUE INDEX IF NOT EXIST user_follow_idx
 ON user_follow (user_name, following_user_name);
 
-CREATE TABLE post
+CREATE TABLE IF NOT EXIST post
 (
     post_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     post_date TIMESTAMP NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE post
     FOREIGN KEY (author) REFERENCES user (user_name)
 );
 
-CREATE TABLE post_comment 
+CREATE TABLE IF NOT EXIST post_comment 
 (
     post_comment_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     post_id INTEGER NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE post_comment
     FOREIGN KEY (user_name) REFERENCES user (user_name)
 )
 
-CREATE TABLE post_like
+CREATE TABLE IF NOT EXIST post_like
 (
     post_id INTEGER NOT NULL,
     user_name VARCHAR(20),
@@ -48,5 +48,5 @@ CREATE TABLE post_like
     FOREIGN KEY (user_name) REFERENCES user (user_name)
 );
 
-CREATE UNIQUE INDEX post_like_idx
+CREATE UNIQUE INDEX IF NOT EXIST post_like_idx
 ON post_like (post_id, user_name);
