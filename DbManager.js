@@ -10,8 +10,8 @@ var init = false;
 // READ-ONLY statements
 const FIND_USER_PS = "SELECT first_name, middle_name, last_name FROM user WHERE user_name = ?";
 const FIND_USER_BY_USERNAME_PWD_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
-const FIND_POST_BY_ID_PS = "SELECT post_id, post_date, description, author, image, type FROM post where post_id = ?";
-const FIND_POST_BY_USER_PS = "SELECT post_id, post_date, description, author, image, type FROM post where author = ?";
+const FIND_POST_BY_ID_PS = "SELECT post_id, post_date, description, author, image, type FROM post WHERE post_id = ?";
+const FIND_POST_BY_USER_PS = "SELECT post_id, post_date, description, author, image, type FROM post WHERE author = ?";
 
 // CREATE/INSERT prepare statements
 const CREATE_USER_PS = "INSERT INTO user (user_name, password, first_name, middle_name, last_name) VALUES (?, ?, ?, ?, ?)";
