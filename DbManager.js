@@ -8,7 +8,7 @@ var init = false;
 
 // all DB prepare statements
 // READ-ONLY statements
-const FIND_USER_PS = "SELECT first_name, middle_name, last_name FROM user WHERE user_name = ?";
+const FIND_USER_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
 const FIND_USER_BY_USERNAME_PWD_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
 const FIND_POST_BY_ID_PS = "SELECT post_id, post_date, description, author, image, type FROM post WHERE post_id = ?";
 const FIND_POST_BY_USER_PS = "SELECT post_id, post_date, description, author, image, type FROM post WHERE author = ?";
@@ -51,9 +51,9 @@ module.exports = function (doRunCreateTables = true) {
      * return callback(err, row)
      */
     this.verifyUserAndPassword = function (userName, password, callback) {
-        db.get(FIND_USER_PS, userName, password, (err, row) => {
+        db.get(FIND_USER_BY_USERNAME_PWD_PS, userName, password, (err, row) => {
             if (err || row == undefined) {
-                callback(err, null);
+                callback(row == undefined ? "No user found" : err, null);
             } else {
                 callback(null, row);
             }

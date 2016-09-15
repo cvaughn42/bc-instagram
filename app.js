@@ -46,23 +46,29 @@ app.get('/', checkAuth, function (req, res) {
     res.redirect('/');
 
 }).post('/login', function (req, res) {
-
     console.dir(req.body);
-    
-    // TODO Authenticate user!
-    req.session.currentUser = {
-        userName: "temp",
-        firstName: "Temp",
-        lastName: "User"
-    };
+    dbManager.verifyUserAndPassword(req.body.userName, req.body.password, function (err, userObject) {
+        if (userObject != null) {
+            req.session.currentUser = {
+                userName: userObject.user_name,
+                firstName: userObject.first_name,
+                lastName: userObject.last_name
+            };
+        }
+        else {
+            // TODO: Show error to user
+            console.log(err);
+        }
+    });
     res.redirect('/');
+
 
 }).get('/register', function (req, res) {
 
     res.sendFile(path.join(__dirname + "/register.html"));
-}).post('/register', function(req, res) {
+}).post('/register', function (req, res) {
     console.dir(req.body);
-    
+
     res.redirect('/');
 });
 
