@@ -30,9 +30,11 @@ var port = 8080;
  * can access protected data
  */
 function checkAuth(req, res, next) {
+    console.dir(req.session.currentUser);
     if (!req.session.currentUser) {
         res.sendFile(path.join(__dirname + '/login.html'));
     } else {
+        console.log("Next");
         next();
     }
 }
@@ -51,26 +53,27 @@ app.get('/', checkAuth, function (req, res) {
     res.send('ok');
 
 }).post('/login', function (req, res) {
-    console.dir(req.body);
+    
+    console.log("Here!");
+
     dbManager.verifyUserAndPassword(req.body.userName, req.body.password, function (err, userObject) {
-        if (userObject != null) {
+        if (!err && userObject) {
             req.session.currentUser = {
                 userName: userObject.user_name,
                 firstName: userObject.first_name,
                 lastName: userObject.last_name
             };
-            res.json(userObject);
-            //res.redirect('/');
+
+            console.log("About to send user: ");
+            console.dir(req.session.currentUser);
+
+            res.send(req.session.currentUser);
         }
         else {
-            // TODO: Show error to user
             console.log(err);
-            res.json({ msg : err });
+            res.status(500).send(err);
         }
     });
-
-    // not needed for ajax calls
-    //res.redirect('/');
 
 
 }).get('/register', function (req, res) {
