@@ -29,18 +29,40 @@ var port = 8080;
  * can access protected data
  */
 function checkAuth(req, res, next) {
-    // if (!req.session.currentUser) {
-    //     // readFile('login.html', 'utf8').then(function (html) {
-    //     //     res.send(html);
-    //     // });
-    // } else {
+    if (!req.session.currentUser) {
+        res.sendFile(path.join(__dirname + '/login.html'));
+    } else {
         next();
-    // }
+    }
 }
 
 app.get('/', checkAuth, function (req, res) {
 
     res.sendFile(path.join(__dirname + '/index.html'));
+
+}).post('/logout', function (req, res) {
+    delete req.session.currentUser;
+    res.redirect('/');
+
+}).post('/login', function (req, res) {
+
+    console.dir(req.body);
+    
+    // TODO Authenticate user!
+    req.session.currentUser = {
+        userName: "temp",
+        firstName: "Temp",
+        lastName: "User"
+    };
+    res.redirect('/');
+
+}).get('/register', function (req, res) {
+
+    res.sendFile(path.join(__dirname + "/register.html"));
+}).post('/register', function(req, res) {
+    console.dir(req.body);
+    
+    res.redirect('/');
 });
 
 var server = app.listen(port, function () {

@@ -5,16 +5,18 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="SSA Boot Camp Twitter Clone Exercise">
-    <meta name="author" content="Chris Vaughan, Jing Ku">
+    <meta name="description" content="SSA Boot Camp Instagram Clone Exercise">
+    <meta name="author" content="Chris, Jing, Luan, Rita">
 
-    <title>SSA Boot Camp Twitter Clone</title>
+    <title>SSA Boot Camp Instagram Clone</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- MetisMenu CSS -->
+    <!--
+     MetisMenu CSS 
     <link href="/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    -->
 
     <!-- Custom CSS -->
     <link href="/css/sb-admin-2.css" rel="stylesheet">
@@ -52,86 +54,38 @@
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                <!-- /.dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+
+                <li>
+                    <a id="mnuCompass" href="#">
+                        <i class="fa fa-compass fa-fw"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> New Comment
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-tasks fa-fw"></i> New Task
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-alerts -->
                 </li>
-                <!-- /.dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i> <span id="currentUser"></span>
-                        <i class="fa fa-caret-down"></i>
+
+                <li>
+                    <a id="mnuHeart" href="#">
+                        <i class="fa fa-heart-o fa-fw"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#" id="mnuProfile"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                        </li>
-                        <li><a href="#" id="mnuSettings"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
                 </li>
-                <!-- /.dropdown -->
+
+                <li>
+                    <a id="mnuProfile" href="#">
+                        <i class="fa fa-user fa-fw"></i>
+                    </a>
+                </li>
+
             </ul>
+
             <!-- /.navbar-top-links -->
+            <div class="col-sm-3 col-md-3 pull-right">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
         </nav>
 
@@ -158,19 +112,14 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- Metis Menu Plugin JavaScript -->
+    <!-- Metis Menu Plugin JavaScript 
     <script src="/vendor/metisMenu/metisMenu.min.js"></script>
+    -->
 
     <!-- Custom Theme JavaScript -->
     <script src="/js/sb-admin-2.js"></script>
 
     <script type="text/babel">
-
-        var CurrentUser = React.createClass({
-            render: function() {
-                return <b>Chris Vaughan</b>;
-            }
-        });
 
       var HelloMessage = React.createClass({
         render: function() {
@@ -183,10 +132,9 @@
         document.getElementById('example')
       );
 
-      ReactDOM.render(
-        <CurrentUser />, $('#currentUser')[0]
-      );
     </script>
+
+    <script src="/js/instagram.js"></script>
 
 </body>
 
