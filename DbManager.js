@@ -10,6 +10,8 @@ var init = false;
 // READ-ONLY statements
 const FIND_USER_PS = "SELECT first_name, middle_name, last_name FROM user WHERE user_name = ?";
 const FIND_USER_BY_USERNAME_PWD_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
+const FIND_POST_BY_ID_PS = "SELECT post_id, post_date, description, author, image, type FROM post where post_id = ?";
+const FIND_POST_BY_USER_PS = "SELECT post_id, post_date, description, author, image, type FROM post where author = ?";
 
 // CREATE/INSERT prepare statements
 const CREATE_USER_PS = "INSERT INTO user (user_name, password, first_name, middle_name, last_name) VALUES (?, ?, ?, ?, ?)";
@@ -79,7 +81,7 @@ module.exports = function (doRunCreateTables = true) {
      */
     this.insertPost = function (authorUserName, binaryImage, imageType, description, callback) {
         db.serialize(() => {
-            var stmt = db.prepare("INSERT INTO post (author, image, type, description, post_date) VALUES (?, ?, ?, ?, ?)");
+            var stmt = db.prepare(CREATE_POST_PS);
             stmt.run(authorUserName, binaryImage, imageType, description, Date.now(), (err) => {
                 if (err) {
                     callback(err, false);
@@ -95,7 +97,7 @@ module.exports = function (doRunCreateTables = true) {
      * return callback(err, rows)
      */
     this.getPostsByUserName = function (userName, callback) {
-        db.all("SELECT * FROM post WHERE author = ?", userName, (err, rows) => {
+        db.all(FIND_POST_BY_USER_PS, userName, (err, rows) => {
             if (err || rows == undefined) {
                 callback(err, null);
             } else {
@@ -108,7 +110,7 @@ module.exports = function (doRunCreateTables = true) {
      * return callback(err, row)
      */
     this.getPostById = function (id, callback) {
-        db.get("SELECT * FROM post WHERE post_id = ?", id, (err, row) => {
+        db.get(FIND_POST_BY_ID_PS, id, (err, row) => {
             if (err || row == undefined) {
                 callback(err, null);
             } else {
