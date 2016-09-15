@@ -6,8 +6,8 @@ var db = new sqlite3.Database(dbFileName);
 
 var init = false;
 
-module.exports = function () {
-    if (!this.init) {
+module.exports = function (doRunCreateTables = true) {
+    if (doRunCreateTables && !this.init) {
         db.serialize(function () {
             loadSqlFile((data) => {
                 db.exec(data, (err) => {
@@ -23,6 +23,13 @@ module.exports = function () {
 
     this.isInit = function () {
         return this.init;
+    }
+
+    /*
+     *
+     */
+    this.verifyUserAndPassword = function(userName, password) {
+
     }
 
     /*
