@@ -71,6 +71,7 @@ module.exports = function (doRunCreateTables = true) {
                     callback(err, false);
                 } else {
                     callback(null, true);
+                }
             });
             stmt.finalize();
         });
