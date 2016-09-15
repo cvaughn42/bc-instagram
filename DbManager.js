@@ -12,6 +12,14 @@ const FIND_USER_PS = "SELECT user_name, first_name, middle_name, last_name FROM 
 const FIND_USER_BY_USERNAME_PWD_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
 const FIND_POST_BY_ID_PS = "SELECT post_id, post_date, description, author, image, type FROM post WHERE post_id = ?";
 const FIND_POST_BY_USER_PS = "SELECT post_id, post_date, description, author, image, type FROM post WHERE author = ?";
+const FIND_POST_LIKE_COUNT_BY_POST_ID_PS = "SELECT count(*) FROM post_like WHERE post_id = ?";
+const FIND_POST_COMMENTS_BY_POST_ID_PS = "SELECT post_commnet_id, post_id, user_name, comment_text, comment_date FROM post_comment WHERE post_id = ?";
+const FIND_FOLLOWER_COUNT_BY_USER_PS = "SELECT count(*) FROM user_follow WHERE user_name = ?";
+const FIND_FOLLOWING_COUNT_BY_USER_PS = "SELECT count(*) FROM user_follow WHERE following_user_name = ?";
+const FIND_FOLLOWER_LIST_BY_USER_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name in " +
+                                        "(SELECT following_user_name FROM user_follow WHERE user_name = ?)";
+const FIND_FOLLOWING_LIST_BY_USER_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name in " +
+                                        "(SELECT user_name FROM user_follow WHERE following_user_name = ?)";
 
 // CREATE/INSERT prepare statements
 const CREATE_USER_PS = "INSERT INTO user (user_name, password, first_name, middle_name, last_name) VALUES (?, ?, ?, ?, ?)";
@@ -116,6 +124,84 @@ module.exports = function (doRunCreateTables = true) {
                 callback(err, null);
             } else {
                 callback(null, row);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, row)
+     */
+    this.getPostCommentsByPostId = function (post_id, callback) {
+        db.get(FIND_POST_COMMENTS_BY_POST_ID_PS, post_id, (err, rows) => {
+            if (err || rows == undefined) {
+                callback(err, null);
+            } else {
+                callback(null, rows);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, row)
+     */
+    this.getPostLikeCountByPostId = function (post_id, callback) {
+        db.get(FIND_POST_LIKE_COUNT_BY_POST_ID_PS, post_id, (err, row) => {
+            if (err || row == undefined) {
+                callback(err, null);
+            } else {
+                callback(null, row);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, row)
+     */
+    this.getFollowerCountByUser = function (user_name, callback) {
+        db.get(FIND_FOLLOWER_COUNT_BY_USER_PS, user_name, (err, row) => {
+            if (err || row == undefined) {
+                callback(err, null);
+            } else {
+                callback(null, row);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, row)
+     */
+    this.getFollowingCountByUser = function (user_name, callback) {
+        db.get(FIND_FOLLOWOMG_COUNT_BY_USER_PS, user_name, (err, row) => {
+            if (err || row == undefined) {
+                callback(err, null);
+            } else {
+                callback(null, row);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, row)
+     */
+    this.getFollowerListByUser = function (user_name, callback) {
+        db.get(FIND_FOLLOWER_LIST_BY_USER_PS, user_name, (err, rows) => {
+            if (err || rows == undefined) {
+                callback(err, null);
+            } else {
+                callback(null, rows);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, row)
+     */
+    this.getFollowingListByUser = function (user_name, callback) {
+        db.get(FIND_FOLLOWOMG_LIST_BY_USER_PS, user_name, (err, rows) => {
+            if (err || rows == undefined) {
+                callback(err, null);
+            } else {
+                callback(null, rows);
             }
         });
     }
