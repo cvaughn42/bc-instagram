@@ -13,16 +13,16 @@
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!--
-     MetisMenu CSS 
+    <!-- MetisMenu CSS --> 
     <link href="/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
-    -->
-
+    
     <!-- Custom CSS -->
     <link href="/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+   <link href="/css/instagram.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -94,16 +94,27 @@
         <!-- Page Content -->
         <div class="container-fluid">
 
-            <div class="row-fluid">
+            <div id="appContent">
 
-                <div id="appContent">
+                <div class="row-fluid">
+                    <div class="col-lg-12">
+                        <form name="photo" id="imageUploadForm" enctype="multipart/form-data" action="/post" method="post">
+                            <input type="file" id="ImageBrowse" name="image" />
+                            <input type="submit" name="upload" value="Upload" />
+                        </form>
+                    </div>
+                </div>
 
-                    <div id="example"></div>
+                <div class="row-fluid">
+
+                    <div id="suggestionsDiv" class="col-lg-4"></div>
+
+                    <div id="postingsDiv" class="col-lg-8"></div>
 
                 </div>
-                <!-- /#appContent -->
+                <!-- /.row -->
             </div>
-            <!-- /.row -->
+            <!-- /#appContent -->
         </div>
         <!-- /.container-fluid -->
     </div>
@@ -112,24 +123,118 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- Metis Menu Plugin JavaScript 
+    <!-- Metis Menu Plugin JavaScript -->
     <script src="/vendor/metisMenu/metisMenu.min.js"></script>
-    -->
-
+    
     <!-- Custom Theme JavaScript -->
     <script src="/js/sb-admin-2.js"></script>
 
     <script type="text/babel">
 
-      var HelloMessage = React.createClass({
-        render: function() {
-          return <h1>Hello {this.props.name}</h1>;
-        }
-      });
+        var Suggestions = React.createClass({
+            render: function() {
+
+                return  <div className="chat-panel panel panel-default">
+                            <div className="panel-heading">
+                                SUGGESTIONS FOR YOU
+                                <div className="btn-group pull-right">
+                                    <button type="button" className="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                        <i className="fa fa-chevron-down"></i>
+                                    </button>
+                                    <ul className="dropdown-menu slidedown">
+                                        <li>
+                                            <a href="#">
+                                                <i className="fa fa-refresh fa-fw"></i> Refresh
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i className="fa fa-check-circle fa-fw"></i> Available
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i className="fa fa-times fa-fw"></i> Busy
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i className="fa fa-clock-o fa-fw"></i> Away
+                                            </a>
+                                        </li>
+                                        <li className="divider"></li>
+                                        <li>
+                                            <a href="#">
+                                                <i className="fa fa-sign-out fa-fw"></i> Sign Out
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="panel-body">
+                                <ul className="chat">
+                                    
+                                </ul>
+                            </div>
+                        </div>;
+            }
+        });
+
+        var Feed = React.createClass({
+            render: function() {
+
+                return  <div className="chat-panel panel panel-default">
+                            <div className="panel-heading">
+                                FEED
+                                <div className="btn-group pull-right">
+                                    <button type="button" className="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                        <i className="fa fa-chevron-down"></i>
+                                    </button>
+                                    <ul className="dropdown-menu slidedown">
+                                        <li>
+                                            <a href="#">
+                                                <i className="fa fa-refresh fa-fw"></i> Refresh
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i className="fa fa-check-circle fa-fw"></i> Available
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i className="fa fa-times fa-fw"></i> Busy
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i className="fa fa-clock-o fa-fw"></i> Away
+                                            </a>
+                                        </li>
+                                        <li className="divider"></li>
+                                        <li>
+                                            <a href="#">
+                                                <i className="fa fa-sign-out fa-fw"></i> Sign Out
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="panel-body">
+                                <ul className="chat">
+                                    
+                                </ul>
+                            </div>
+                        </div>;
+            }
+        });
 
       ReactDOM.render(
-        <HelloMessage name="John" />,
-        document.getElementById('example')
+        <Suggestions />, $('#suggestionsDiv')[0]
+      );
+
+      ReactDOM.render(
+        <Feed />, $('#postingsDiv')[0]
       );
 
     </script>

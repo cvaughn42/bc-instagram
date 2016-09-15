@@ -15,4 +15,20 @@ $(document).ready(function() {
         return false;
     });
 
+    $('#imageUploadForm').on('submit',(function(e) {
+        e.preventDefault()
+        $.ajax({
+            type:'POST',
+            url: $(this).attr('action'),
+            data:$(this).serialize(),
+            cache:false,
+            success: function(data) {
+                alert(data);
+            },
+            error: function(jqXhr, status, err) {
+                alert("ERROR: " + err);
+            }
+        });
+    }));
+
 });

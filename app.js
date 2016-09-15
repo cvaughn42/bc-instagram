@@ -45,6 +45,11 @@ app.get('/', checkAuth, function (req, res) {
     delete req.session.currentUser;
     res.redirect('/');
 
+}).post('/post', function (req, res) {
+    
+    console.log(req.body);
+    res.send('ok');
+
 }).post('/login', function (req, res) {
     console.dir(req.body);
     dbManager.verifyUserAndPassword(req.body.userName, req.body.password, function (err, userObject) {
