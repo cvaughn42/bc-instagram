@@ -26,7 +26,7 @@ CREATE TABLE post
     author VARCHAR(20) NOT NULL,
     image BLOB,
     type VARCHAR(20) NOT NULL,
-    FOREIGN KEY (author) REFERENCES user (user_name),
+    FOREIGN KEY (author) REFERENCES user (user_name)
 );
 
 CREATE TABLE post_comment 
