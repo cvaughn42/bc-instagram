@@ -123,12 +123,12 @@ app.get('/', checkAuth, function (req, res) {
     res.sendFile(path.join(__dirname + "/register.html"));
 }).post('/register', function (req, res) {
 
-    dbManager.insertUser(req.body.userName, req.body.password, req.body.firstName, req.body.middleName, req.body.lastName, function (err, userObject) {
-        if (userObject != null) {
+    dbManager.insertUser(req.body.userName, req.body.password, req.body.firstName, req.body.middleName, req.body.lastName, function (err, isSuccess) {
+        if (isSuccess != null) {
             req.session.currentUser = {
-                userName: userObject.user_name,
-                firstName: userObject.first_name,
-                lastName: userObject.last_name
+                userName: req.body.userName,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName
             };
             res.redirect('/');
         }
