@@ -25,7 +25,10 @@ CREATE TABLE IF NOT EXISTS post
     description VARCHAR(200) NOT NULL,
     author VARCHAR(20) NOT NULL,
     image BLOB,
-    type VARCHAR(20) NOT NULL,
+    mime_type VARCHAR(20) NOT NULL,
+    encoding VARCHAR(20),
+    file_size INTEGER NOT NULL DEFAULT 0,
+    file_name VARCHAR(255) NOT NULL,
     FOREIGN KEY (author) REFERENCES user (user_name)
 );
 

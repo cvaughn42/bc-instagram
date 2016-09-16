@@ -4,6 +4,8 @@ const sqlCreateTableFileName = "create_tables.sql";
 var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database(dbFileName);
 
+var fs = require("fs");
+
 var init = false;
 
 // all DB prepare statements
@@ -24,7 +26,9 @@ const FIND_FOLLOWING_LIST_BY_USER_PS = "SELECT user_name, first_name, middle_nam
 // CREATE/INSERT prepare statements
 const CREATE_USER_PS = "INSERT INTO user (user_name, password, first_name, middle_name, last_name) VALUES (?, ?, ?, ?, ?)";
 const CREATE_USER_FOLLOW_PS = "INSERT INTO user_follow (user_name, following_user_name) VALUES (?, ?)";
-const CREATE_POST_PS = "INSERT INTO post (post_date, description, author, image, type) values (?, ?, ?, ?, ?)";
+const CREATE_POST_PS = "INSERT INTO post " +
+                       "(post_date, description, author, image, mime_type, encoding, file_name, file_size) " +
+                       "values ($postDate, $description, $author, $image, $mimeType, $encoding, $fileName, $fileSize)";
 const CREATE_POST_COMMENT_PS = "INSERT INTO post_comment (post_id, username, comment_text, comment_date) values (?, ?, ?, ?)";
 const CREATE_POST_LIKE_PS = "INSERT INTO post_like (post_id, username) values (?, ?)";
 
@@ -88,10 +92,22 @@ module.exports = function (doRunCreateTables = true) {
     /*
      * return callback(err, isSuccess)
      */
-    this.insertPost = function (authorUserName, binaryImage, imageType, description, callback) {
+    this.insertPost = function (post, callback) {
+
+        var params = {
+            $postDate: post.postDate,
+            $description: post.description,
+            $author: post.author,
+            $image: post.data,
+            $mimeType: post.mimeType,
+            $encoding: post.encoding,
+            $fileName: post.fileName,
+            $fileSize: post.fileSize
+        };
+
         db.serialize(() => {
             var stmt = db.prepare(CREATE_POST_PS);
-            stmt.run(authorUserName, binaryImage, imageType, description, Date.now(), (err) => {
+            stmt.run(params, (err) => {
                 if (err) {
                     callback(err, false);
                 } else {
@@ -100,7 +116,7 @@ module.exports = function (doRunCreateTables = true) {
             });
             stmt.finalize();
         });
-    }
+    };
 
     /*
      * return callback(err, rows)

@@ -19,8 +19,13 @@ app.use(session({
     saveUninitialized: false
 }));
 
+var multer  = require('multer');
+var upload = multer({ dest: 'uploads/' });
+
 // Set up resources directory to server static files
 app.use(express.static('resources'));
+
+var fs = require("fs");
 
 // Port constant
 var port = 8080;
@@ -42,14 +47,56 @@ app.get('/', checkAuth, function (req, res) {
 
     res.sendFile(path.join(__dirname + '/index.html'));
 
-}).post('/logout', function (req, res) {
+}).post('/logout', checkAuth, function (req, res) {
     delete req.session.currentUser;
     res.redirect('/');
 
-}).post('/post', function (req, res) {
-    
-    console.log(req.body);
-    res.send('ok');
+}).post('/post', checkAuth, upload.single('image'), function (req, res) {
+        
+    fs.readFile(req.file.path, function (err, data) {
+        if (err) 
+        {
+            res.status(500).send('Unable to save post: ' + err);
+        }
+        else
+        {
+            var post = {
+                author: req.session.currentUser.userName,
+                postDate: new Date(),
+                fileName: req.file.originalname,
+                description: req.file.originalname,
+                data: data,
+                mimeType: req.file.mimetype, 
+                encoding: req.file.encoding, 
+                fileSize: req.file.size
+            };
+
+            dbManager.insertPost(post, (err, result) => {
+                if (!err)
+                {
+                    if (result)
+                    {
+                        res.send('ok');
+                    }
+                    else
+                    {
+                        console.log("Something unexpected happened while saving the post");
+                        res.status(500).send();
+                    }
+                }
+                else
+                {
+                    console.log("Error creating post: " + err);
+                    res.status(500).send(err);
+                }
+
+                fs.unlink(req.file.path, function(err) {
+                    if (err)
+                        console.log("Unable to delete file " + req.file.path + ": " + err);
+                });
+            });
+        }
+    });
 
 }).post('/login', function (req, res) {
     
