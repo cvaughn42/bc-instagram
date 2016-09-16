@@ -13,16 +13,16 @@
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- MetisMenu CSS --> 
+    <!-- MetisMenu CSS -->
     <link href="/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
-    
+
     <!-- Custom CSS -->
     <link href="/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-   <link href="/css/instagram.css" rel="stylesheet">
+    <link href="/css/instagram.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -44,11 +44,11 @@
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 <a class="navbar-brand" href="/"><i class="fa fa-instagram fa-fw"></i>&nbsp;Instagram Clone</a>
             </div>
             <!-- /.navbar-header -->
@@ -89,8 +89,6 @@
 
         </nav>
 
-        <input type="hidden" id="currentUser" value="%currentUser.userName%" />
-
         <!-- Page Content -->
         <div class="container-fluid">
 
@@ -98,10 +96,12 @@
 
                 <div class="row-fluid">
                     <div class="col-lg-12">
+                        <div id="fileUploadDiv"></div>
+
                         <form name="photo" id="imageUploadForm" enctype="multipart/form-data" action="/post" method="post">
-                            <input type="file" id="ImageBrowse" name="image" />
-                            <input type="submit" name="upload" value="Upload" />
-                        </form>
+                                    <input type="file" id="ImageBrowse" name="image" />
+                                    <input type="submit" name="uploadButton" value="Upload" className="btn btn-primary btn-outline" />
+                                </form>
                     </div>
                 </div>
 
@@ -125,11 +125,73 @@
 
     <!-- Metis Menu Plugin JavaScript -->
     <script src="/vendor/metisMenu/metisMenu.min.js"></script>
-    
+
     <!-- Custom Theme JavaScript -->
     <script src="/js/sb-admin-2.js"></script>
 
     <script type="text/babel">
+
+        var FileUploader = React.createClass({
+
+            getInitialState: function() {
+                return {
+                    files: null,
+                    fileName: null
+                };
+            },
+
+            handleSubmit: function(evt) {
+                
+                var form = $(evt.target);
+                
+                $.ajax({
+                    type:'POST',
+                    url: form.attr('action'),
+                    cache:false,
+                    data: new FormData(form[0]),
+                   // data: form.serialize(),
+                    contentType: false,
+                    processData: false,
+//                    contentType: 'multipart/form-data',
+                    success: function(data) {
+                        alert(data);
+
+                        // self.setState({ 
+                        //    fileName: null 
+                        // });
+
+                        form.get(0).reset();
+                    },
+                    error: function(jqXhr, status, err) {
+                        alert("ERROR: " + err);
+                    }
+                });
+                
+                evt.preventDefault();
+            },
+
+            handleClick: function(evt) {
+
+                var self = this;
+                var form = $('#imageUploadForm');
+                var formData = new FormData(form);
+                formData.append('file', $("#ImageBrowse").get(0).files[0]);
+                formData.append('test', 'abc');          
+                
+                console.dir(this.getState().files);
+                console.dir(formData.valueOf('test'));
+            
+                evt.preventDefault();
+            },
+
+            render: function() {
+                        return  <form name="photo" id="imageUploadForm" enctype="multipart/form-data" action="/post" 
+                                      method="post" onSubmit={this.handleSubmit}>
+                                    <input type="file" id="ImageBrowse" name="image" defaultValue="{ this.state.fileName }" />
+                                    <input type="submit" name="uploadButton" value="Upload" className="btn btn-primary btn-outline" />
+                                </form>;
+            }
+        });
 
         var Suggestions = React.createClass({
             render: function() {
@@ -228,6 +290,10 @@
                         </div>;
             }
         });
+
+        ReactDOM.render(
+            <FileUploader />, $('#fileUploadDiv')[0]
+        );
 
       ReactDOM.render(
         <Suggestions />, $('#suggestionsDiv')[0]

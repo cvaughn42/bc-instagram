@@ -30,11 +30,10 @@ var port = 8080;
  * can access protected data
  */
 function checkAuth(req, res, next) {
-    console.dir(req.session.currentUser);
+
     if (!req.session.currentUser) {
         res.sendFile(path.join(__dirname + '/login.html'));
     } else {
-        console.log("Next");
         next();
     }
 }
@@ -54,9 +53,8 @@ app.get('/', checkAuth, function (req, res) {
 
 }).post('/login', function (req, res) {
     
-    console.log("Here!");
-
     dbManager.verifyUserAndPassword(req.body.userName, req.body.password, function (err, userObject) {
+
         if (!err && userObject) {
             req.session.currentUser = {
                 userName: userObject.user_name,
@@ -64,13 +62,10 @@ app.get('/', checkAuth, function (req, res) {
                 lastName: userObject.last_name
             };
 
-            console.log("About to send user: ");
-            console.dir(req.session.currentUser);
-
             res.send(req.session.currentUser);
         }
         else {
-            console.log(err);
+            console.log('Unable to authenticate user: ' + err);
             res.status(500).send(err);
         }
     });
@@ -81,7 +76,6 @@ app.get('/', checkAuth, function (req, res) {
     res.sendFile(path.join(__dirname + "/register.html"));
 }).post('/register', function (req, res) {
 
-    console.dir(req.body);
     dbManager.insertUser(req.body.userName, req.body.password, req.body.firstName, req.body.middleName, req.body.lastName, function (err, userObject) {
         if (userObject != null) {
             req.session.currentUser = {
@@ -92,8 +86,7 @@ app.get('/', checkAuth, function (req, res) {
             res.redirect('/');
         }
         else {
-            // TODO: Show error to user
-            console.log(err);
+            console.log('Unable to register new user: ' + err);
             res.redirect('/register');
         }
     });
