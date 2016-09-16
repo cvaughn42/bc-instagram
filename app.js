@@ -43,6 +43,31 @@ function checkAuth(req, res, next) {
     }
 }
 
+function createPostObject(row) {
+    if (row)
+    {
+        return {
+            postId: row.post_id,
+            author: {
+                userName: row.author_user_name,
+                firstName: row.author_first_name,
+                middleName: row.author_middle_name,
+                lastName: row.author_last_name
+            },
+            postDate: new Date(row.post_date),
+            fileName: row.file_name,
+            description: row.description,
+            mimeType: row.mime_type, 
+            encoding: row.encoding, 
+            fileSize: row.file_size
+        };
+    }
+    else
+    {
+        return null;
+    }
+}
+
 app.get('/', checkAuth, function (req, res) {
 
     res.sendFile(path.join(__dirname + '/index.html'));
@@ -50,6 +75,39 @@ app.get('/', checkAuth, function (req, res) {
 }).post('/logout', checkAuth, function (req, res) {
     delete req.session.currentUser;
     res.redirect('/');
+
+}).get('/post/:postId', checkAuth, function (req, res) {
+
+    dbManager.getPostById(req.params.postId, (err, post) => {
+        if (err)
+        {
+            console.log("Unable to get post for ID " + req.params.postId + ": " + err);
+            res.status(500).send(err);
+        }
+        else
+        {
+            res.send(createPostObject(post));
+        }
+    });
+
+}).get('/image/:postId', checkAuth, function (req, res) {
+
+    // TODO Add logic to ensure users cannot see files they are not
+    // authorized to view
+    //
+    dbManager.getPostImage(req.params.postId, (err, image) => {
+
+        if (err)
+        {
+            res.status(500).send(err);
+        }
+        else
+        {
+            // Build and send response, here
+            res.type(image.mime_type);
+            res.send(image.image);
+        }
+    });
 
 }).post('/post', checkAuth, upload.single('image'), function (req, res) {
         

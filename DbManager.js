@@ -10,9 +10,17 @@ var init = false;
 
 // all DB prepare statements
 // READ-ONLY statements
+const READ_POST_SQL = `SELECT p.post_id, p.post_date, p.description, u.user_name AS author_user_name, 
+                              u.first_name AS author_first_name, u.middle_name AS author_middle_name, 
+                              u.last_name AS author_last_name, p.mime_type, p.encoding, p.file_name, 
+                              p.file_size 
+                       FROM post AS p 
+                       INNER JOIN user AS u
+                            ON p.author = u.user_name `;
+
 const FIND_USER_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
 const FIND_USER_BY_USERNAME_PWD_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
-const FIND_POST_BY_ID_PS = "SELECT post_id, post_date, description, author, image, type FROM post WHERE post_id = ?";
+const FIND_POST_BY_ID_PS = READ_POST_SQL + 'WHERE p.post_id = ?';
 const FIND_POST_BY_USER_PS = "SELECT post_id, post_date, description, author, image, type FROM post WHERE author = ?";
 const FIND_POST_LIKE_COUNT_BY_POST_ID_PS = "SELECT count(*) FROM post_like WHERE post_id = ?";
 const FIND_POST_COMMENTS_BY_POST_ID_PS = "SELECT post_commnet_id, post_id, user_name, comment_text, comment_date FROM post_comment WHERE post_id = ?";
@@ -22,6 +30,10 @@ const FIND_FOLLOWER_LIST_BY_USER_PS = "SELECT user_name, first_name, middle_name
                                         "(SELECT following_user_name FROM user_follow WHERE user_name = ?)";
 const FIND_FOLLOWING_LIST_BY_USER_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name in " +
                                         "(SELECT user_name FROM user_follow WHERE following_user_name = ?)";
+
+const READ_POST_IMAGE_PS = `SELECT image, file_name, mime_type, encoding, file_size 
+                            FROM post 
+                            WHERE post_id = $postId`;
 
 // CREATE/INSERT prepare statements
 const CREATE_USER_PS = "INSERT INTO user (user_name, password, first_name, middle_name, last_name) VALUES (?, ?, ?, ?, ?)";
@@ -118,6 +130,31 @@ module.exports = function (doRunCreateTables = true) {
         });
     };
 
+    /**
+     * Returns binary image data for the specified post
+     * @param postId Unique identifier for the post
+     * @returns binary data (image file) - null if no data 
+     * associated with post
+     */
+    this.getPostImage = function(postId, callback) {
+
+        var params = {
+            $postId: postId
+        };
+
+        db.get(READ_POST_IMAGE_PS, params, (err, row) => {
+
+            if (err)
+            {
+                callback("Unable to retrieve image for post " + postId + ": " + err, null);
+            }
+            else
+            {
+                callback(null, row);
+            }
+        });
+    };
+
     /*
      * return callback(err, rows)
      */
@@ -136,10 +173,17 @@ module.exports = function (doRunCreateTables = true) {
      */
     this.getPostById = function (id, callback) {
         db.get(FIND_POST_BY_ID_PS, id, (err, row) => {
-            if (err || row == undefined) {
+            if (err) {
                 callback(err, null);
             } else {
-                callback(null, row);
+                if (row)
+                {
+                    callback(null, row);
+                }
+                else
+                {
+                    callback("Something weird happened in getPostById for id " + id, null);
+                }
             }
         });
     }
