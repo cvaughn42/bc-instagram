@@ -53,8 +53,7 @@
                                 <div class="form-group">
                                     <a href="/register">Register</a>
                                 </div>
-                                <!-- Change this to a button or input when using this as a form -->
-                                <input type="button" id="submitButton" name="submitButton" value="Login" class="btn btn-lg btn-success btn-block" />
+                                <input type="submit" id="submitButton" name="submitButton" value="Login" class="btn btn-lg btn-success btn-block" />
                             </fieldset>
                         </form>
                     </div>
@@ -77,13 +76,13 @@
 
 <script>
     $(document).ready(function() {
-    $("#submitButton").click(function() {
+    $("#loginForm").submit(function(e) {
     // Use AJAX to post the object to our adduser service
             $.ajax({
                 async: true,
                 cache: false,
                 type: 'POST',
-                data: { userName: $("#userName").val(), password: $("#password").val() },
+                data: $("#loginForm").serialize(),
                 url: '/login',
                 dataType: 'JSON',
                 success: function() {
@@ -93,6 +92,7 @@
                     alert("Error: " + err);
                 }
             });
+            e.preventDefault();
     });
 });
 </script>
