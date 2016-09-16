@@ -97,11 +97,6 @@
                 <div class="row-fluid">
                     <div class="col-lg-12">
                         <div id="fileUploadDiv"></div>
-
-                        <form name="photo" id="imageUploadForm" enctype="multipart/form-data" action="/post" method="post">
-                                    <input type="file" id="ImageBrowse" name="image" />
-                                    <input type="submit" name="uploadButton" value="Upload" className="btn btn-primary btn-outline" />
-                                </form>
                     </div>
                 </div>
 
@@ -149,10 +144,8 @@
                     url: form.attr('action'),
                     cache:false,
                     data: new FormData(form[0]),
-                   // data: form.serialize(),
                     contentType: false,
                     processData: false,
-//                    contentType: 'multipart/form-data',
                     success: function(data) {
                         alert(data);
 
@@ -170,24 +163,10 @@
                 evt.preventDefault();
             },
 
-            handleClick: function(evt) {
-
-                var self = this;
-                var form = $('#imageUploadForm');
-                var formData = new FormData(form);
-                formData.append('file', $("#ImageBrowse").get(0).files[0]);
-                formData.append('test', 'abc');          
-                
-                console.dir(this.getState().files);
-                console.dir(formData.valueOf('test'));
-            
-                evt.preventDefault();
-            },
-
             render: function() {
                         return  <form name="photo" id="imageUploadForm" enctype="multipart/form-data" action="/post" 
                                       method="post" onSubmit={this.handleSubmit}>
-                                    <input type="file" id="ImageBrowse" name="image" defaultValue="{ this.state.fileName }" />
+                                    <input type="file" id="ImageBrowse" name="image" defaultValue="" />
                                     <input type="submit" name="uploadButton" value="Upload" className="btn btn-primary btn-outline" />
                                 </form>;
             }
