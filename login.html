@@ -82,8 +82,8 @@
                 async: true,
                 cache: false,
                 type: 'POST',
-                data: $("#loginForm").serialize(),
-                url: '/login',
+                data: $(this).serialize(),
+                url: $(this).attr("action"),
                 dataType: 'JSON',
                 success: function() {
                     window.location.replace("/");
