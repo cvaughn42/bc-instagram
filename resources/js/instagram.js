@@ -5,14 +5,14 @@ app.config(function($routeProvider) {
         templateUrl : "/templates/alerts.html"
     }).when("/suggestions", {
         templateUrl: "/templates/suggestions.html"
-    }).when("/profile", {
+    }).when("/profile/:userName", {
         templateUrl: "/templates/profile.html"
     }).otherwise({
         templateUrl: '/templates/feed.html'
     });
 });
 
-app.controller('bc-instagram-controller', function ($scope, $rootScope) {
+app.controller('bc-instagram-controller', function ($scope, $rootScope, $routeParams) {
     $.ajax('/currentUser', {
         async: false,
         cache: false,
@@ -39,6 +39,15 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope) {
 
     $scope.$on('$viewContentLoaded', function(event) {
         console.log("content loaded");
+
+        if ($routeParams.userName)
+        {
+            console.log($routeParams.userName);
+        }
+        else
+        {
+            console.dir($routeParams);
+        }
     });
 });
 
