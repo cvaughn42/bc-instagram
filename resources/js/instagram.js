@@ -87,7 +87,9 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         }
         else if (view === "feed")
         {
-
+            $http.get("/get-posts").success(function(data) {
+                $scope.posts = data;
+            });
         }
     });
 });
