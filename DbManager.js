@@ -138,13 +138,9 @@ module.exports = function (doRunCreateTables = true) {
      */
     this.getPostImage = function (postId, callback) {
 
-        var params = {
-            $postId: postId
-        };
+        db.get(READ_POST_IMAGE_PS, postId, (err, row) => {
 
-        db.get(READ_POST_IMAGE_PS, params, (err, row) => {
-
-            if (err) {
+            if (err || row === undefined) {
                 callback("Unable to retrieve image for post " + postId + ": " + err, null);
             }
             else {
