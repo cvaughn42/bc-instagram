@@ -1,19 +1,3 @@
-var currentUser = null;
-$.ajax('/currentUser', {
-    async: false,
-    cache: false,
-    dataType: 'json',
-    method: 'GET',
-    success: function (data) {
-        currentUser = data;
-    },
-    error: function (jqXhr, status, error) {
-        alert('Unable to load currentUser: ' + error);
-    }
-});
-
-console.dir(currentUser);
-
 var app = angular.module("bc-instagram", ["ngRoute"]);
 
 app.config(function($routeProvider) {
@@ -29,12 +13,34 @@ app.config(function($routeProvider) {
 });
 
 app.controller('bc-instagram-controller', function ($scope, $rootScope) {
+    $.ajax('/currentUser', {
+        async: false,
+        cache: false,
+        dataType: 'json',
+        method: 'GET',
+        success: function (data) {
+            $scope.currentUser = data;
+            console.dir(data);
+        },
+        error: function (jqXhr, status, error) {
+            alert('Unable to load currentUser: ' + error);
+        }
+    });
+
+    $scope.currentUserName = function () {
+        if ($scope.currentUser) {
+            return $scope.currentUser.firstName + ' ' +
+                ($scope.currentUser.middleName ? $scope.currentUser.middleName + ' ' : '') + 
+                $scope.currentUser.lastName;
+        } else {
+            return "HACKER";
+        }
+    };
 
     $scope.$on('$viewContentLoaded', function(event) {
         console.log("content loaded");
     });
 });
-
 
 
 /*
