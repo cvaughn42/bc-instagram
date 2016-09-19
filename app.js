@@ -218,6 +218,28 @@ app.get('/', checkAuth, function (req, res) {
         console.log("Unable to read profile html: " + err);
         res.end();
     })
+}).post("/follow", checkAuth, (req, res) => {
+    var author =  req.session.currentUser.userName;
+    var userToFollow = req.body.userToFollow;
+
+    dbManager.insertUserFollow(author, userToFollow, (err, isSuccess) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.json({ isSuccess: isSuccess });
+        }
+    });
+}).post("/unfollow", checkAuth, (req, res) => {
+    var author =  req.session.currentUser.userName;
+    var userToFollow = req.body.userToFollow;
+
+    dbManager.deleteUserFollow(author, userToFollow, (err, isSuccess) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.json({ isSuccess: isSuccess });
+        }
+    });
 });
 
 var server = app.listen(port, function () {

@@ -27,9 +27,9 @@ const FIND_POST_COMMENTS_BY_POST_ID_PS = "SELECT post_commnet_id, post_id, user_
 const FIND_FOLLOWER_COUNT_BY_USER_PS = "SELECT count(*) FROM user_follow WHERE user_name = ?";
 const FIND_FOLLOWING_COUNT_BY_USER_PS = "SELECT count(*) FROM user_follow WHERE following_user_name = ?";
 const FIND_FOLLOWER_LIST_BY_USER_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name in " +
-                                        "(SELECT following_user_name FROM user_follow WHERE user_name = ?)";
+    "(SELECT following_user_name FROM user_follow WHERE user_name = ?)";
 const FIND_FOLLOWING_LIST_BY_USER_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name in " +
-                                        "(SELECT user_name FROM user_follow WHERE following_user_name = ?)";
+    "(SELECT user_name FROM user_follow WHERE following_user_name = ?)";
 
 const READ_POST_IMAGE_PS = `SELECT image, file_name, mime_type, encoding, file_size 
                             FROM post 
@@ -39,8 +39,8 @@ const READ_POST_IMAGE_PS = `SELECT image, file_name, mime_type, encoding, file_s
 const CREATE_USER_PS = "INSERT INTO user (user_name, password, first_name, middle_name, last_name) VALUES (?, ?, ?, ?, ?)";
 const CREATE_USER_FOLLOW_PS = "INSERT INTO user_follow (user_name, following_user_name) VALUES (?, ?)";
 const CREATE_POST_PS = "INSERT INTO post " +
-                       "(post_date, description, author, image, mime_type, encoding, file_name, file_size) " +
-                       "values ($postDate, $description, $author, $image, $mimeType, $encoding, $fileName, $fileSize)";
+    "(post_date, description, author, image, mime_type, encoding, file_name, file_size) " +
+    "values ($postDate, $description, $author, $image, $mimeType, $encoding, $fileName, $fileSize)";
 const CREATE_POST_COMMENT_PS = "INSERT INTO post_comment (post_id, username, comment_text, comment_date) values (?, ?, ?, ?)";
 const CREATE_POST_LIKE_PS = "INSERT INTO post_like (post_id, username) values (?, ?)";
 
@@ -136,7 +136,7 @@ module.exports = function (doRunCreateTables = true) {
      * @returns binary data (image file) - null if no data 
      * associated with post
      */
-    this.getPostImage = function(postId, callback) {
+    this.getPostImage = function (postId, callback) {
 
         var params = {
             $postId: postId
@@ -144,12 +144,10 @@ module.exports = function (doRunCreateTables = true) {
 
         db.get(READ_POST_IMAGE_PS, params, (err, row) => {
 
-            if (err)
-            {
+            if (err) {
                 callback("Unable to retrieve image for post " + postId + ": " + err, null);
             }
-            else
-            {
+            else {
                 callback(null, row);
             }
         });
@@ -176,12 +174,10 @@ module.exports = function (doRunCreateTables = true) {
             if (err) {
                 callback(err, null);
             } else {
-                if (row)
-                {
+                if (row) {
                     callback(null, row);
                 }
-                else
-                {
+                else {
                     callback("Something weird happened in getPostById for id " + id, null);
                 }
             }
@@ -210,6 +206,34 @@ module.exports = function (doRunCreateTables = true) {
                 callback(err, null);
             } else {
                 callback(null, row);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, isSuccess)
+     */
+    this.insertUserFollow = function (userName, userToFollow, callback) {
+        db.run(CREATE_USER_FOLLOW_PS, userName, userToFollow, function (err) {
+            if (err) {
+                callback(err, false);
+            } else {
+                callback(null, true);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, isSuccess)
+     */
+    this.deleteUserFollow = function (userName, userToFollow, callback) {
+        db.run(DELETE_FOLLOWER_PS, userName, userToFollow, function (err) {
+            if (err) {
+                callback(err, false);
+            } else if (this.changes === 0) {
+                callback("Cannot find the row with user_name " + userName, false);
+            } else {
+                callback(null, true);
             }
         });
     }
