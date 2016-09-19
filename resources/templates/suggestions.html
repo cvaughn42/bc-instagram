@@ -6,6 +6,14 @@
 
         <h1 class="page-header">Suggestions</h1>
 
+        <div>
+            <div>{{suggestion.user.userName}}</div>
+            <div>{{suggestion.user.firstName}} {{suggestion.user.lastName}}</div>
+            <div>
+                <img ng-repeat="postId in suggestion.postIds" height="100px" ng-src="/image/{{postId}}" />
+            </div>
+        </div>
+
     </div>
 
     <div class="col-lg-4">&nbsp;</div>

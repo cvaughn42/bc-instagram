@@ -110,7 +110,7 @@ app.get('/', checkAuth, function (req, res) {
     // TODO Add logic to ensure users cannot see files they are not
     // authorized to view
     //
-    dbManager.getPostImage(req.params.postId, (err, image) => {
+    dbManager.getPostImage(req.params.postId, function(err, image) {
 
         if (err)
         {
@@ -119,8 +119,16 @@ app.get('/', checkAuth, function (req, res) {
         else
         {
             // Build and send response, here
-            res.type(image.mime_type);
-            res.send(image.image);
+            if (image)
+            {
+                res.type(image.mime_type);
+                res.send(image.image);
+            }
+            else
+            {
+                console.log('Image is null for post ID ' + req.params.postId);
+                res.status(500).send("Image is null.");
+            }
         }
     });
 

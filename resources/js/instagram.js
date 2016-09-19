@@ -62,7 +62,14 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         }
         else if (view === "suggestions")
         {
-
+            $scope.suggestion = {
+                user: {
+                    userName: "jku",
+                    firstName: "Jing",
+                    lastName: "Ku"
+                },
+                postIds: [2, 3, 4]
+            };
         }
         else if (view === "profile")
         {
