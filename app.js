@@ -240,6 +240,26 @@ app.get('/', checkAuth, function (req, res) {
             res.json({ isSuccess: isSuccess });
         }
     });
+}).get('/get-followers', checkAuth, function(req, res) {
+    var userName =  req.session.currentUser.userName;
+
+    dbManager.getFollowerListByUser(userName, (err, rows) => {
+        if (err){
+            res.status(500).send(err);
+        } else {
+            res.json(rows);
+        }
+    });
+}).get('/get-followings', checkAuth, function(req, res) {
+    var userName =  req.session.currentUser.userName;
+
+    dbManager.getFollowingListByUser(userName, (err, rows) => {
+        if (err){
+            res.status(500).send(err);
+        } else {
+            res.json(rows);
+        }
+    });
 }).get('/currentUser', checkAuth, function(req, res) {
     res.send(req.session.currentUser);
     console.dir(req.session.currentUser);

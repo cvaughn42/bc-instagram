@@ -281,7 +281,7 @@ module.exports = function (doRunCreateTables = true) {
      * return callback(err, row)
      */
     this.getFollowingListByUser = function (user_name, callback) {
-        db.get(FIND_FOLLOWOMG_LIST_BY_USER_PS, user_name, (err, rows) => {
+        db.get(FIND_FOLLOWING_LIST_BY_USER_PS, user_name, (err, rows) => {
             if (err || rows == undefined) {
                 callback(err, null);
             } else {
