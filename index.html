@@ -34,7 +34,7 @@
 </head>
 
 <body>
-    <div id="wrapper" ng-app="bc-instagram">
+    <div id="wrapper" ng-app="bc-instagram" ng-controller="bc-instagram-controller">
 
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -66,7 +66,7 @@
                 <!-- /.dropdown -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-user fa-fw"></i> {{currentUserName()}} <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="#/profile" id="mnuProfile"><i class="fa fa-user fa-fw"></i> User Profile</a>
@@ -106,15 +106,6 @@
         <!-- /.container-fluid -->
     </div>
     <!-- /#wrapper -->
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
-
-    <!-- Metis Menu Plugin JavaScript -->
-    <script src="/vendor/metisMenu/metisMenu.min.js"></script>
-
-    <!-- Custom Theme JavaScript -->
-    <script src="/js/sb-admin-2.js"></script>
 
     <script type="text/babel" src="js/PostViewer.js"></script>
     <script type="text/babel">

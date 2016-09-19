@@ -210,7 +210,7 @@ app.get('/', checkAuth, function (req, res) {
             res.redirect('/register');
         }
     });
-}).get('/profile', function(req, res) {
+}).get('/profile', checkAuth, function(req, res) {
 
     readFile('profile.html', 'utf8').then(function(html) {
         res.send(html);
@@ -240,6 +240,9 @@ app.get('/', checkAuth, function (req, res) {
             res.json({ isSuccess: isSuccess });
         }
     });
+}).get('/currentUser', checkAuth, function(req, res) {
+    res.send(req.session.currentUser);
+    console.dir(req.session.currentUser);
 });
 
 var server = app.listen(port, function () {
