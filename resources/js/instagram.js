@@ -1,18 +1,13 @@
-$(document).ready(function() {
+var app = angular.module("bc-instagram", ["ngRoute"]);
 
-    $('#mnuProfile').on('click', function() {
-        alert("Display user profile");
-        return false;
+app.config(function($routeProvider) {
+    $routeProvider.when("/alerts", {
+        templateUrl : "/templates/alerts.html"
+    }).when("/suggestions", {
+        templateUrl: "/templates/suggestions.html"
+    }).when("/profile", {
+        templateUrl: "/templates/profile.html"
+    }).otherwise({
+        templateUrl: '/templates/feed.html'
     });
-
-    $('#mnuHeart').on('click', function() {
-        alert("Display things you like");
-        return false;
-    });
-
-    $('#mnuCompass').on('click', function() {
-        alert("Display suggestions");
-        return false;
-    });
-
 });

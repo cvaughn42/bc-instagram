@@ -31,14 +31,10 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="/js/react/react.js"></script>
-    <script src="/js/react/react-dom.js"></script>
-    <script src="/js/react/browser.min.js"></script>
 </head>
 
 <body>
-    <div id="wrapper">
+    <div id="wrapper" ng-app="bc-instagram">
 
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -56,19 +52,19 @@
             <ul class="nav navbar-top-links navbar-right">
 
                 <li>
-                    <a id="mnuCompass" href="#">
+                    <a id="mnuCompass" href="#/suggestions">
                         <i class="fa fa-compass fa-fw"></i>
                     </a>
                 </li>
 
                 <li>
-                    <a id="mnuHeart" href="#">
+                    <a id="mnuHeart" href="#/alerts">
                         <i class="fa fa-heart-o fa-fw"></i>
                     </a>
                 </li>
 
                 <li>
-                    <a id="mnuProfile" href="#">
+                    <a id="mnuProfile" href="#/profile">
                         <i class="fa fa-user fa-fw"></i>
                     </a>
                 </li>
@@ -92,24 +88,10 @@
         <!-- Page Content -->
         <div class="container-fluid">
 
-            <div id="appContent">
+            <ng-view>
 
-                <div class="row-fluid">
-                    <div class="col-lg-12">
-                        <div id="fileUploadDiv"></div>
-                    </div>
-                </div>
-
-                <div class="row-fluid">
-
-                    <div id="suggestionsDiv" class="col-lg-4"></div>
-
-                    <div id="postingsDiv" class="col-lg-8"></div>
-
-                </div>
-                <!-- /.row -->
-            </div>
-            <!-- /#appContent -->
+            </ng-view>
+        
         </div>
         <!-- /.container-fluid -->
     </div>
@@ -124,6 +106,7 @@
     <!-- Custom Theme JavaScript -->
     <script src="/js/sb-admin-2.js"></script>
 
+    <script type="text/babel" src="js/PostViewer.js"></script>
     <script type="text/babel">
 
         var FileUploader = React.createClass({
@@ -279,11 +262,14 @@
       );
 
       ReactDOM.render(
-        <Feed />, $('#postingsDiv')[0]
+        <PostViewer postId="1" />, $('#postingsDiv')[0]
       );
 
     </script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
     <script src="/js/instagram.js"></script>
 
 </body>
