@@ -30,21 +30,6 @@ var fs = require("fs");
 // Port constant
 var port = 8080;
 
-function readFile(fileName, encoding) {
-
-    return new Promise(function (resolve, reject) {
-
-        fs.readFile(fileName, encoding, function (err, contents) {
-            if (err) {
-                reject(err);
-            }
-            else {
-                resolve(contents);
-            }
-        });
-    });
-};
-
 /**
  * This is an interceptor to ensure users are logged in before they 
  * can access protected data
@@ -87,7 +72,7 @@ app.get('/', checkAuth, function (req, res) {
 
     res.sendFile(path.join(__dirname + '/index.html'));
 
-}).get('/logout', checkAuth, function (req, res) {
+}).post('/logout', checkAuth, function (req, res) {
     delete req.session.currentUser;
     res.redirect('/');
 
@@ -210,14 +195,7 @@ app.get('/', checkAuth, function (req, res) {
             res.redirect('/register');
         }
     });
-}).get('/profile', function(req, res) {
 
-    readFile('profile.html', 'utf8').then(function(html) {
-        res.send(html);
-    }).catch(function(err) {
-        console.log("Unable to read profile html: " + err);
-        res.end();
-    })
 });
 
 var server = app.listen(port, function () {
