@@ -12,6 +12,13 @@ app.config(function($routeProvider) {
     });
 });
 
+app.controller('bc-instagram-controller', function ($scope, $rootScope) {
+
+    $scope.$on('$viewContentLoaded', function(event) {
+        console.log("content loaded");
+    });
+});
+
 
 /*
 var loadUserProfile = function (userName) {
