@@ -156,6 +156,19 @@ module.exports = function (doRunCreateTables = true) {
     /*
      * return callback(err, rows)
      */
+    this.getPosts = function ( callback) {
+        db.all(READ_POST_SQL, (err, rows) => {
+            if (err || rows == undefined) {
+                callback(err, null);
+            } else {
+                callback(null, rows);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, rows)
+     */
     this.getPostsByUserName = function (userName, callback) {
         db.all(FIND_POST_BY_USER_PS, userName, (err, rows) => {
             if (err || rows == undefined) {

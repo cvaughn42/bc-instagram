@@ -105,6 +105,17 @@ app.get('/', checkAuth, function (req, res) {
         }
     });
 
+}).get("/get-posts", checkAuth, function(req, res) {
+    dbManager.getPosts((err, rows) => {
+        if (err)
+        {
+            res.status(500).send(err);
+        }
+        else
+        {
+            res.json(rows);
+        }
+    });
 }).get('/image/:postId', checkAuth, function (req, res) {
 
     // TODO Add logic to ensure users cannot see files they are not
