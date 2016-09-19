@@ -2,7 +2,7 @@ var app = angular.module("bc-instagram", ["ngRoute"]);
 
 app.config(function($routeProvider) {
     $routeProvider.when("/alerts", {
-        templateUrl : "/templates/alerts.html"
+         templateUrl : "/templates/alerts.html"
     }).when("/suggestions", {
         templateUrl: "/templates/suggestions.html"
     }).when("/profile/:userName", {
@@ -12,7 +12,7 @@ app.config(function($routeProvider) {
     });
 });
 
-app.controller('bc-instagram-controller', function ($scope, $rootScope, $routeParams, $http) {
+app.controller('bc-instagram-controller', function ($scope, $rootScope, $routeParams, $http, $route) {
     $http.get('/currentUser').success(function (data) {
         $scope.currentUser = data;
         console.dir(data);
@@ -30,16 +30,58 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         }
     };
 
-    $scope.$on('$viewContentLoaded', function(event) {
-        console.log("content loaded");
+    $scope.getTemplate = function(path) {
 
-        if ($routeParams.userName)
+        path = path.substr('/templates/'.length);
+        path = path.substr(0, path.length - ".html".length);
+        return path;
+    };
+
+    /**
+     * Tests whether the profile should be loaded as read-only
+     */
+    $scope.getProfileReadOnly = function() {
+
+        if ($scope.profileUser && $scope.profile.currentUser)
         {
-            console.log($routeParams.userName);
+            return $scope.profileUser.userName !== $scope.profile.currentUser.userName;
         }
         else
         {
-            console.dir($routeParams);
+            return true;
+        }
+    };
+
+    $scope.$on('$viewContentLoaded', function(event) {
+
+        var view = $scope.getTemplate($route.current.templateUrl);
+
+        if (view === "alerts")
+        {
+
+        }
+        else if (view === "suggestions")
+        {
+
+        }
+        else if (view === "profile")
+        {
+            if (!$routeParams.userName)
+            {
+                $routeParams.userName = $scope.currentUser.userName;
+            }
+
+            // Load profile here
+            setTimeout(function() {
+                $http.get("/profile/" + $routeParams.userName).success(function(data) {
+                    $scope.profileUser = data;
+                    //$scope.$apply();
+                });
+            }, 500);
+        }
+        else if (view === "feed")
+        {
+
         }
     });
 });

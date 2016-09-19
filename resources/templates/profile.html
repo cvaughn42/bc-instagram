@@ -24,22 +24,22 @@
                     <form role="form">
                         <div class="form-group">
                             <label>User Name</label>
-                            <div id="userName" name="userName"></div>
+                            <div id="userName" name="userName">{{profileUser.userName}}</div>
                         </div>
                         <div class="form-group">
                             <label>First Name</label>
-                            <input class="form-control" id="firstName" name="firstName" maxlength="20" autofocus>
-                            <div id="firstName" name="firstName"></div>
+                            <input class="form-control" id="firstName" name="firstName" maxlength="20" ng-model="profileUser.firstName" autofocus>
+                            <div id="firstName" name="firstName">{{profileUser.firstName}}</div>
                         </div>
                         <div class="form-group">
                             <label>Middle Name</label>
-                            <input class="form-control" id="middleName" name="middleName" maxlength="20">
-                            <div id="middleName" name="middleName"></div>
+                            <input class="form-control" id="middleName" name="middleName" maxlength="20" ng-model="profileUser.middleName">
+                            <div id="middleName" name="middleName">{{profileUser.middleName}}</div>
                         </div>
                         <div class="form-group">
                             <label>Last Name</label>
-                            <input class="form-control" id="lastName" name="lastName" maxlength="20">
-                            <div id="lastName" name="lastName"></div>
+                            <input class="form-control" id="lastName" name="lastName" maxlength="20" ng-model="profileUser.lastName">
+                            <div id="lastName" name="lastName">{{profileUser.lastName}}</div>
                         </div>
 
                         <button type="button" id="updateProfileButton" onclick="updateProfile(); return false;" class="btn btn-primary">

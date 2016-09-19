@@ -262,7 +262,11 @@ app.get('/', checkAuth, function (req, res) {
     });
 }).get('/currentUser', checkAuth, function(req, res) {
     res.send(req.session.currentUser);
-    console.dir(req.session.currentUser);
+
+}).get('/profile/:userName', checkAuth, function(req, res) {
+
+    // TODO Modify to get profile for userName
+    res.send(req.session.currentUser);
 });
 
 var server = app.listen(port, function () {
