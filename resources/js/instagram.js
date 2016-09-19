@@ -12,19 +12,12 @@ app.config(function($routeProvider) {
     });
 });
 
-app.controller('bc-instagram-controller', function ($scope, $rootScope, $routeParams) {
-    $.ajax('/currentUser', {
-        async: false,
-        cache: false,
-        dataType: 'json',
-        method: 'GET',
-        success: function (data) {
-            $scope.currentUser = data;
-            console.dir(data);
-        },
-        error: function (jqXhr, status, error) {
-            alert('Unable to load currentUser: ' + error);
-        }
+app.controller('bc-instagram-controller', function ($scope, $rootScope, $routeParams, $http) {
+    $http.get('/currentUser').success(function (data) {
+        $scope.currentUser = data;
+        console.dir(data);
+    }).error(function () {
+        alert('Unable to load currentUser: ' + error);
     });
 
     $scope.currentUserName = function () {
