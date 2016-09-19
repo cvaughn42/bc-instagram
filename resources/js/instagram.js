@@ -72,12 +72,11 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
             }
 
             // Load profile here
-            setTimeout(function() {
+            //setTimeout(function() {
                 $http.get("/profile/" + $routeParams.userName).success(function(data) {
                     $scope.profileUser = data;
-                    //$scope.$apply();
                 });
-            }, 500);
+            //}, 500);
         }
         else if (view === "feed")
         {
