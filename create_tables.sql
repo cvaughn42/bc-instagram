@@ -18,6 +18,21 @@ CREATE TABLE IF NOT EXISTS user_follow
 CREATE UNIQUE INDEX IF NOT EXISTS user_follow_idx
 ON user_follow (user_name, following_user_name);
 
+CREATE TABLE IF NOT EXISTS alert
+(
+    alert_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    description VARCHAR(255) NOT NULL,
+    actor_user_name VARCHAR(20) NOT NULL,
+    affected_user_name VARCHAR(20) NOT NULL,
+    action_date TIMESTAMP NOT NULL,
+    post_id INTEGER,
+    post_comment_id INTEGER,
+    FOREIGN KEY (actor_user_name) 
+        REFERENCES user (user_name),
+    FOREIGN KEY (affected_user_name)
+        REFERENCES user (user_name)
+);
+
 CREATE TABLE IF NOT EXISTS post
 (
     post_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
