@@ -203,6 +203,15 @@ app.get('/', checkAuth, function (req, res) {
         }
     });
 
+}).get('/delete-post/:postId', checkAuth, function (req, res) {
+    
+    dbManager.deletePost(req.params.postId, req.session.currentUser.userName, function (err, isSuccess) {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.json({isSuccess: isSuccess});
+        }
+    });
 }).post('/login', function (req, res) {
     
     dbManager.verifyUserAndPassword(req.body.userName, req.body.password, function (err, userObject) {

@@ -76,6 +76,12 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         .success(function (response) { location.reload(true); })
         .error(function (response) { alert(response); });
     };
+
+    $scope.onClickDeletePost = function(postId) {
+        $http.get("/delete-post/" + postId, null)
+            .success(function (response) { location.reload(true); })
+            .error(function (response) { alert(response.isSuccess); });
+    }
     
     $scope.getProfileNotReadOnly = function() {
         return !$scope.getProfileReadOnly();
