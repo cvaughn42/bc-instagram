@@ -299,6 +299,18 @@ app.get('/', checkAuth, function (req, res) {
 
     // TODO Modify to get profile for userName
     res.send(req.session.currentUser);
+}).get('/getAlerts', checkAuth, function(req, res) {
+    var userName =  req.session.currentUser.userName;
+    console.log(userName);
+
+    dbManager.getAlert(userName, (err, rows) => {
+        if (err){
+            console.dir(err);
+            res.status(500).send(err);
+        } else {
+            res.json(rows);
+        }
+    });
 });
 
 var server = app.listen(port, function () {

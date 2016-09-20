@@ -87,6 +87,10 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
 
         if (view === "alerts")
         {
+            $http.get('/getAlerts', {cache: false}).success(function(data) {
+                $scope.alerts = data;
+                console.dir(data);
+            });
 
         }
         else if (view === "suggestions")

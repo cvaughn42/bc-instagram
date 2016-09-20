@@ -68,7 +68,7 @@ const CREATE_ALERT_PS = `INSERT INTO alert
                          (description, action_date, actor_user_name, affected_user_name, post_id, post_comment_id)
                          VALUES (?, ?, ?, ?, ?, ?)`;
 
-const SELECT_ALERT_SQL = `SELECT a.alert_id, a.description, a.action_date
+const SELECT_ALERT_SQL = `SELECT a.alert_id, a.description, a.action_date,
                                  u1.user_name AS actor_user_name, u1.first_name AS actor_first_name, u1.middle_name AS actor_middle_name, u1.last_name AS actor_last_name,
                                  u2.user_name AS affected_user_name, u2.first_name AS affected_first_name, u2.middle_name AS affected_middle_name, u2.last_name AS affected_last_name,
                                  p.post_id, pc.post_comment_id 
@@ -83,7 +83,7 @@ const SELECT_ALERT_SQL = `SELECT a.alert_id, a.description, a.action_date
                                 ON a.post_comment_id = pc.post_comment_id `;
 
 const FIND_ALERTS_PS = SELECT_ALERT_SQL + 
-                       `WHERE a.action_date > ? 
+                       `WHERE a.action_date > $actionDate and (a.actor_user_name = $userName or a.affected_user_name = $userName)
                         ORDER BY a.action_date DESC`;
 
 
@@ -203,6 +203,18 @@ module.exports = function (doRunCreateTables = true) {
                     callback(err, false);
                 } else {
                     callback(null, true);
+
+                    this.addAlert({
+                        description: 'New User',
+                        actor: { userName: userName },
+                        affectedUser: { userName: userName },
+                        postId: null,
+                        postCommentId: null
+                    }, (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    });
                 }
             });
             stmt.finalize();
@@ -232,6 +244,18 @@ module.exports = function (doRunCreateTables = true) {
                     callback(err, false);
                 } else {
                     callback(null, true);
+
+                    this.addAlert({
+                        description: 'New Post',
+                        actor: { userName: post.author },
+                        affectedUser: { userName: post.author },
+                        postId: this.lastID,
+                        postCommentId: null
+                    }, (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    });
                 }
             });
             stmt.finalize();
@@ -336,6 +360,18 @@ module.exports = function (doRunCreateTables = true) {
                 callback(err, false);
             } else {
                 callback(null, true);
+
+                this.addAlert({
+                    description: 'Follow',
+                    actor: { userName: userName },
+                    affectedUser: { userName: userToFollow },
+                    postId: null,
+                    postCommentId: null
+                }, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
             }
         });
     }
@@ -403,6 +439,49 @@ module.exports = function (doRunCreateTables = true) {
                 callback(err, null);
             } else {
                 callback(null, rows);
+            }
+        });
+    }
+
+    /*
+     * return callback(err, row)
+     */
+    this.getAlert = function (userName, callback) {
+        var actionDate = new Date().getTime();
+        actionDate -= (24 * 60 * 60 * 1000);
+        actionDate = new Date(actionDate);
+
+        var params = {
+            $actionDate: actionDate,
+            $userName: userName
+        };
+
+        db.all(FIND_ALERTS_PS, params, (err, rows) => {
+            if (err || rows == undefined) {
+                callback(err, null);
+            } else {
+                var alerts = [];
+                for (var row of rows) {
+                    alerts.push({
+                        actionDate: new Date(row.action_date),
+                        description: row.description,
+                        actor: {
+                            userName: row.actor_user_name,
+                            firstName: row.actor_first_name,
+                            middleName: row.actor_middle_name,
+                            last_name: row.actor_last_name
+                        },
+                        affectedUser: {
+                            userName: row.affected_user_name,
+                            firstName: row.affected_first_name,
+                            middleName: row.affected_middle_name,
+                            lastName: row.affected_last_name
+                        },
+                        postId: row.post_id,
+                        postCommnetId: row.post_comment_id
+                    });
+                }
+                callback(null, alerts);
             }
         });
     }
