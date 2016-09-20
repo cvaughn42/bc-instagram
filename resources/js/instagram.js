@@ -54,15 +54,19 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
      */
     $scope.getProfileReadOnly = function() {
 
-        if ($scope.profileUser && $scope.profile.currentUser)
+        if ($scope.profileUser && $scope.currentUser)
         {
-            return $scope.profileUser.userName !== $scope.profile.currentUser.userName;
+            return $scope.profileUser.userName !== $scope.currentUser.userName;
         }
         else
         {
             return true;
         }
     };
+
+    $scope.getProfileNotReadOnly = function() {
+        return !$scope.getProfileReadOnly();
+    }
 
     $scope.$on('$viewContentLoaded', function(event) {
 
@@ -94,7 +98,8 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         }
         else if (view === "feed")
         {
-            $http.get("/get-posts").success(function(data) {
+            $http.get("/get-posts", {cache: false}).success(function(data) {
+                console.dir(data);
                 $scope.posts = data;
             });
         }
