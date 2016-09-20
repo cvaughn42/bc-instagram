@@ -37,14 +37,26 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         return path;
     };
 
+    $scope.followUser = function(followingUserName) {
+        $http.post('/follow', {
+            userToFollow: followingUserName
+        }).success(function (data) {
+            $scope.suggestions = $scope.suggestions.filter(function (suggestion) {
+                return suggestion.user.userName !== followingUserName;
+            });
+            console.dir($scope.suggestions);
+        })
+    };
+
+
     /**
      * Tests whether the profile should be loaded as read-only
      */
     $scope.getProfileReadOnly = function() {
 
-        if ($scope.profileUser && $scope.profile.currentUser)
+        if ($scope.profileUser && $scope.currentUser)
         {
-            return $scope.profileUser.userName !== $scope.profile.currentUser.userName;
+            return $scope.profileUser.userName !== $scope.currentUser.userName;
         }
         else
         {
@@ -64,6 +76,10 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         .success(function (response) { location.reload(true); })
         .error(function (response) { alert(response); });
     };
+    
+    $scope.getProfileNotReadOnly = function() {
+        return !$scope.getProfileReadOnly();
+    }
 
     $scope.$on('$viewContentLoaded', function(event) {
 
@@ -95,7 +111,8 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         }
         else if (view === "feed")
         {
-            $http.get("/get-posts").success(function(data) {
+            $http.get("/get-posts", {cache: false}).success(function(data) {
+                console.dir(data);
                 $scope.posts = data;
                 console.dir(data);
             });

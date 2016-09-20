@@ -28,18 +28,18 @@
                         </div>
                         <div class="form-group">
                             <label>First Name</label>
-                            <input class="form-control" id="firstName" name="firstName" maxlength="20" ng-model="profileUser.firstName" autofocus>
-                            <div id="firstName" name="firstName">{{profileUser.firstName}}</div>
+                            <input ng-if="getProfileNotReadOnly()" class="form-control" id="firstName" name="firstName" maxlength="20" ng-model="profileUser.firstName" autofocus>
+                            <div ng-if="getProfileReadOnly()" id="firstName" name="firstName">{{profileUser.firstName}}</div>
                         </div>
                         <div class="form-group">
                             <label>Middle Name</label>
-                            <input class="form-control" id="middleName" name="middleName" maxlength="20" ng-model="profileUser.middleName">
-                            <div id="middleName" name="middleName">{{profileUser.middleName}}</div>
+                            <input ng-if="getProfileNotReadOnly()" class="form-control" id="middleName" name="middleName" maxlength="20" ng-model="profileUser.middleName">
+                            <div ng-if="getProfileReadOnly()" id="middleName" name="middleName">{{profileUser.middleName}}</div>
                         </div>
                         <div class="form-group">
                             <label>Last Name</label>
-                            <input class="form-control" id="lastName" name="lastName" maxlength="20" ng-model="profileUser.lastName">
-                            <div id="lastName" name="lastName">{{profileUser.lastName}}</div>
+                            <input ng-if="getProfileNotReadOnly()" class="form-control" id="lastName" name="lastName" maxlength="20" ng-model="profileUser.lastName">
+                            <div ng-if="getProfileReadOnly()" id="lastName" name="lastName">{{profileUser.lastName}}</div>
                         </div>
 
                         <button type="button" id="updateProfileButton" onclick="updateProfile(); return false;" class="btn btn-primary">
