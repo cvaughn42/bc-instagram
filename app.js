@@ -203,6 +203,15 @@ app.get('/', checkAuth, function (req, res) {
         }
     });
 
+}).get('/delete-post/:postId', checkAuth, function (req, res) {
+    
+    dbManager.deletePost(req.params.postId, req.session.currentUser.userName, function (err, isSuccess) {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.json({isSuccess: isSuccess});
+        }
+    });
 }).post('/login', function (req, res) {
     
     dbManager.verifyUserAndPassword(req.body.userName, req.body.password, function (err, userObject) {
@@ -299,6 +308,17 @@ app.get('/', checkAuth, function (req, res) {
 
     // TODO Modify to get profile for userName
     res.send(req.session.currentUser);
+}).get('/getAlerts', checkAuth, function(req, res) {
+    var userName =  req.session.currentUser.userName;
+    
+    dbManager.getAlert(userName, (err, rows) => {
+        if (err){
+            console.dir(err);
+            res.status(500).send(err);
+        } else {
+            res.json(rows);
+        }
+    });
 });
 
 var server = app.listen(port, function () {

@@ -75,15 +75,59 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
             .error(function (response) { alert(response); });
     };
 
+<<<<<<< HEAD
     $scope.getProfileNotReadOnly = function () {
+=======
+    $scope.onClickDeletePost = function(postId) {
+        $http.get("/delete-post/" + postId, null)
+            .success(function (response) { location.reload(true); })
+            .error(function (response) { alert(response.isSuccess); });
+    };
+    
+    $scope.getProfileNotReadOnly = function() {
+>>>>>>> df8c97693e61a067ae9542f7d96500d9b70d5566
         return !$scope.getProfileReadOnly();
-    }
+    };
+
+    $scope.formatDate = function (dt) {
+        return dt.toString();
+    };
+
+    $scope.userProfileLink = function (user) {
+        return '<a href="#/profile/' + user.userName + '">' + user.firstName + ' ' +
+            (user.middleName ? user.middleName + ' ' : '') + 
+            user.lastName + '</a>';
+    };
+
+    $scope.getAlertDescription = function(alert) {
+        switch (alert.description) {
+            case 'New User':
+                return 'You joined Instagram at ' + $scope.formatDate(alert.actionDate);
+            case 'New Post':
+                if (alert.actor.userName === $scope.currentUser.userName) {
+                    return 'You added a <a href="#/post/' + alert.postId + '">new post</a> on ' + $scope.formatDate(alert.actionDate);
+                } else {
+                    return $scope.userProfileLink(alert.actor) + ' added a <a href="#/post/' + alert.postId + '">new post</a> on ' + $scope.formatDate(alert.actionDate);
+                }
+            case 'Follow':
+                return 'Follow';
+            case 'Like':
+                return 'Like';
+            default:
+                return alert.description + ' at ' + $scope.formatDate(alert.actionDate);
+        } 
+    };
 
     $scope.$on('$viewContentLoaded', function (event) {
 
         var view = $scope.getTemplate($route.current.templateUrl);
 
-        if (view === "alerts") {
+        if (view === "alerts")
+        {
+            $http.get('/getAlerts', {cache: false}).success(function(data) {
+                $scope.alerts = data;
+                console.dir(data);
+            });
 
         }
         else if (view === "suggestions") {
