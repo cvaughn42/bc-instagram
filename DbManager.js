@@ -197,6 +197,7 @@ module.exports = function (doRunCreateTables = true) {
      * return callback(err, isSuccess)
      */
     this.insertUser = function (userName, password, firstName, middleName, lastName, callback) {
+        var self = this;
         db.serialize(() => {
             var stmt = db.prepare(CREATE_USER_PS);
             stmt.run(userName, password, firstName, middleName, lastName, (err) => {
@@ -205,7 +206,7 @@ module.exports = function (doRunCreateTables = true) {
                 } else {
                     callback(null, true);
 
-                    this.addAlert({
+                    self.addAlert({
                         description: 'New User',
                         actor: { userName: userName },
                         affectedUser: { userName: userName },
@@ -226,7 +227,7 @@ module.exports = function (doRunCreateTables = true) {
      * return callback(err, isSuccess)
      */
     this.insertPost = function (post, callback) {
-
+        var self = this;
         var params = {
             $postDate: post.postDate,
             $description: post.description,
@@ -240,13 +241,13 @@ module.exports = function (doRunCreateTables = true) {
 
         db.serialize(() => {
             var stmt = db.prepare(CREATE_POST_PS);
-            stmt.run(params, (err) => {
+            stmt.run(params, function (err) {
                 if (err) {
                     callback(err, false);
                 } else {
                     callback(null, true);
 
-                    this.addAlert({
+                    self.addAlert({
                         description: 'New Post',
                         actor: { userName: post.author },
                         affectedUser: { userName: post.author },
@@ -368,13 +369,15 @@ module.exports = function (doRunCreateTables = true) {
      * return callback(err, isSuccess)
      */
     this.insertUserFollow = function (userName, userToFollow, callback) {
+        var self = this;
+
         db.run(CREATE_USER_FOLLOW_PS, userName, userToFollow, function (err) {
             if (err) {
                 callback(err, false);
             } else {
                 callback(null, true);
 
-                this.addAlert({
+                self.addAlert({
                     description: 'Follow',
                     actor: { userName: userName },
                     affectedUser: { userName: userToFollow },
@@ -482,7 +485,7 @@ module.exports = function (doRunCreateTables = true) {
                             userName: row.actor_user_name,
                             firstName: row.actor_first_name,
                             middleName: row.actor_middle_name,
-                            last_name: row.actor_last_name
+                            lastName: row.actor_last_name
                         },
                         affectedUser: {
                             userName: row.affected_user_name,

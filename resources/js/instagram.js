@@ -81,11 +81,40 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         $http.get("/delete-post/" + postId, null)
             .success(function (response) { location.reload(true); })
             .error(function (response) { alert(response.isSuccess); });
-    }
+    };
     
     $scope.getProfileNotReadOnly = function() {
         return !$scope.getProfileReadOnly();
-    }
+    };
+
+    $scope.formatDate = function (dt) {
+        return dt.toString();
+    };
+
+    $scope.userProfileLink = function (user) {
+        return '<a href="#/profile/' + user.userName + '">' + user.firstName + ' ' +
+            (user.middleName ? user.middleName + ' ' : '') + 
+            user.lastName + '</a>';
+    };
+
+    $scope.getAlertDescription = function(alert) {
+        switch (alert.description) {
+            case 'New User':
+                return 'You joined Instagram at ' + $scope.formatDate(alert.actionDate);
+            case 'New Post':
+                if (alert.actor.userName === $scope.currentUser.userName) {
+                    return 'You added a <a href="#/post/' + alert.postId + '">new post</a> on ' + $scope.formatDate(alert.actionDate);
+                } else {
+                    return $scope.userProfileLink(alert.actor) + ' added a <a href="#/post/' + alert.postId + '">new post</a> on ' + $scope.formatDate(alert.actionDate);
+                }
+            case 'Follow':
+                return 'Follow';
+            case 'Like':
+                return 'Like';
+            default:
+                return alert.description + ' at ' + $scope.formatDate(alert.actionDate);
+        } 
+    };
 
     $scope.$on('$viewContentLoaded', function(event) {
 

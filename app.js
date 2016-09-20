@@ -310,8 +310,7 @@ app.get('/', checkAuth, function (req, res) {
     res.send(req.session.currentUser);
 }).get('/getAlerts', checkAuth, function(req, res) {
     var userName =  req.session.currentUser.userName;
-    console.log(userName);
-
+    
     dbManager.getAlert(userName, (err, rows) => {
         if (err){
             console.dir(err);
