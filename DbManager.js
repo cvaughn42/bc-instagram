@@ -64,6 +64,29 @@ const UPDATE_USER_PS = "UPDATE user SET first_name = ?, middle_name = ?, last_na
 // DELETE prepare statements
 const DELETE_FOLLOWER_PS = "DELETE FROM user_follow WHERE user_name = ? AND following_user_name = ?";
 
+// ALERTS SQL
+const CREATE_ALERT_PS = `INSERT INTO alert 
+                         (description, action_date, actor_user_name, affected_user_name, post_id, post_comment_id)
+                         VALUES (?, ?, ?, ?, ?, ?)`;
+
+const SELECT_ALERT_SQL = `SELECT a.alert_id, a.description, a.action_date
+                                 u1.user_name AS actor_user_name, u1.first_name AS actor_first_name, u1.middle_name AS actor_middle_name, u1.last_name AS actor_last_name,
+                                 u2.user_name AS affected_user_name, u2.first_name AS affected_first_name, u2.middle_name AS affected_middle_name, u2.last_name AS affected_last_name,
+                                 p.post_id, pc.post_comment_id 
+                          FROM alert AS a 
+                          INNER JOIN user AS u1
+                                ON a.actor_user_name = u1.user_name 
+                          INNER JOIN user AS u2
+                                ON a.affected_user_name = u2.user_name 
+                          LEFT OUTER JOIN post AS p
+                                ON a.post_id = p.post_id 
+                          LEFT OUTER JOIN post_comment AS pc
+                                ON a.post_comment_id = pc.post_comment_id `;
+
+const FIND_ALERTS_PS = SELECT_ALERT_SQL + 
+                       `WHERE a.action_date > ? 
+                        ORDER BY a.action_date DESC`;
+
 
 // Main function
 module.exports = function (doRunCreateTables = true) {
@@ -84,6 +107,32 @@ module.exports = function (doRunCreateTables = true) {
     this.isInit = function () {
         return this.init;
     }
+
+    this.addAlert = function(alert, callback) {
+
+        db.serialize(function() {
+
+            var stmt = db.prepare(CREATE_ALERT_PS);
+                        
+            stmt.run(alert.description, new Date(), alert.actor.userName, alert.affectedUser.userName, alert.postId, alert.postCommentId, function(err) {
+
+                if (err)
+                {
+                    callback("Unable to create alert: " + err, false);
+                }
+                else if (this.changes === 0)
+                {
+                    callback("Unable to create alert: 0 rows affected", false);
+                }
+                else
+                {
+                    callback(null, true);
+                }
+            });
+
+            stmt.finalize();
+        });
+    };
 
     this.getSuggestions = function(userName, callback) {
 
