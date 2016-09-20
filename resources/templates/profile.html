@@ -28,7 +28,8 @@
                         </div>
                         <div class="form-group">
                             <label>First Name</label>
-                            <input ng-if="getProfileNotReadOnly()" class="form-control" id="firstName" name="firstName" maxlength="20" ng-model="profileUser.firstName" autofocus>
+                            <input ng-if="getProfileNotReadOnly()" class="form-control" id="firstName" name="firstName" maxlength="20" ng-model="profileUser.firstName"
+                                autofocus>
                             <div ng-if="getProfileReadOnly()" id="firstName" name="firstName">{{profileUser.firstName}}</div>
                         </div>
                         <div class="form-group">
@@ -52,21 +53,29 @@
 
             <!-- Following -->
             <div class="tab-pane fade" id="following-pill">
-                <div class="well">
-                    <div id="following-div"></div>
+                <div ng-repeat="following in followings" class="well">
+                    <div style="display: inline-block;">
+                        <h3>{{following.user_name}}</h3>
+                        <div>{{following.first_name}} {{following.last_name}}</div>
+                    </div>
                 </div>
             </div>
             <!-- /Following -->
 
             <!-- Followers -->
             <div class="tab-pane fade" id="followers-pill">
-                <div class="well">
-                    <div id="followers-div"></div>
+                <div ng-repeat="follower in followers" class="well">
+                    <div style="display: inline-block;">
+                        <h3>{{follower.user_name}}</h3>
+                        <div>{{follower.first_name}} {{follower.last_name}}</div>
+                    </div>
+                    <!-- /Followers -->
                 </div>
             </div>
-            <!-- /Followers -->
-
         </div>
+
+
+
 
         <div class="col-lg-4">&nbsp;</div>
 

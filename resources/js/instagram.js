@@ -1,8 +1,8 @@
 var app = angular.module("bc-instagram", ["ngRoute"]);
 
-app.config(function($routeProvider) {
+app.config(function ($routeProvider) {
     $routeProvider.when("/alerts", {
-         templateUrl : "/templates/alerts.html"
+        templateUrl: "/templates/alerts.html"
     }).when("/suggestions", {
         templateUrl: "/templates/suggestions.html"
     }).when("/profile/:userName", {
@@ -12,7 +12,7 @@ app.config(function($routeProvider) {
     });
 });
 
-app.controller('bc-instagram-controller', function ($scope, $rootScope, $routeParams, $http, $route) {
+app.controller('bc-instagram-controller', function ($scope, $rootScope, $routeParams, $http, $route, $q) {
     $http.get('/currentUser').success(function (data) {
         $scope.currentUser = data;
         console.dir(data);
@@ -23,21 +23,21 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
     $scope.currentUserName = function () {
         if ($scope.currentUser) {
             return $scope.currentUser.firstName + ' ' +
-                ($scope.currentUser.middleName ? $scope.currentUser.middleName + ' ' : '') + 
+                ($scope.currentUser.middleName ? $scope.currentUser.middleName + ' ' : '') +
                 $scope.currentUser.lastName;
         } else {
             return "HACKER";
         }
     };
 
-    $scope.getTemplate = function(path) {
+    $scope.getTemplate = function (path) {
 
         path = path.substr('/templates/'.length);
         path = path.substr(0, path.length - ".html".length);
         return path;
     };
 
-    $scope.followUser = function(followingUserName) {
+    $scope.followUser = function (followingUserName) {
         $http.post('/follow', {
             userToFollow: followingUserName
         }).success(function (data) {
@@ -52,66 +52,93 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
     /**
      * Tests whether the profile should be loaded as read-only
      */
-    $scope.getProfileReadOnly = function() {
+    $scope.getProfileReadOnly = function () {
 
-        if ($scope.profileUser && $scope.currentUser)
-        {
+        if ($scope.profileUser && $scope.currentUser) {
             return $scope.profileUser.userName !== $scope.currentUser.userName;
         }
-        else
-        {
+        else {
             return true;
         }
     };
 
-    $scope.onClickFileUpload = function(fileInputElementId, description) {
+    $scope.onClickFileUpload = function (fileInputElementId, description) {
         var formData = new FormData();
         formData.append('image', document.getElementById(fileInputElementId).files[0]);
         formData.append('description', description);
 
         $http.post("/post", formData, {
             transformRequest: angular.identity,
-            headers: {'Content-Type': undefined}
+            headers: { 'Content-Type': undefined }
         })
-        .success(function (response) { location.reload(true); })
-        .error(function (response) { alert(response); });
+            .success(function (response) { location.reload(true); })
+            .error(function (response) { alert(response); });
     };
-    
-    $scope.getProfileNotReadOnly = function() {
+
+    $scope.getProfileNotReadOnly = function () {
         return !$scope.getProfileReadOnly();
     }
 
-    $scope.$on('$viewContentLoaded', function(event) {
+    $scope.$on('$viewContentLoaded', function (event) {
 
         var view = $scope.getTemplate($route.current.templateUrl);
 
-        if (view === "alerts")
-        {
+        if (view === "alerts") {
 
         }
-        else if (view === "suggestions")
-        {
-            $http.get("/suggestions/" + $scope.currentUser.userName, {cache: false}).success(function(data) {
+        else if (view === "suggestions") {
+            $http.get("/suggestions/" + $scope.currentUser.userName, { cache: false }).success(function (data) {
                 $scope.suggestions = data;
             });
         }
-        else if (view === "profile")
-        {
-            if (!$routeParams.userName)
-            {
+        else if (view === "profile") {
+            if (!$routeParams.userName) {
                 $routeParams.userName = $scope.currentUser.userName;
             }
 
             // Load profile here
             //setTimeout(function() {
-                $http.get("/profile/" + $routeParams.userName).success(function(data) {
-                    $scope.profileUser = data;
-                });
+            // $http.get("/profile/" + $routeParams.userName).success(function (data) {
+            //     var profileUser = data;
+            //     $http.get("/get-followers").success(function (data) {
+            //         var userFollowers = data;
+            //         $http.get("/get-followings").success(function (data) {
+            //             $scope.profileUser = profileUser;
+            //             $scope.followers = userFollowers;
+            //             $scope.followings = data;
+
+            //         });
+
+            //     });
+
+            // });
             //}, 500);
+
+            // $http.get("/profile/" + $routeParams.userName, { cache: false }).success(function (data) {
+            //     console.log("profile: ", data);
+            //     $scope.profileUser = data;
+            // }).then("/get-followings", { cache: false }).success(function (data) {
+            //     console.log("followings: ", data);
+            //     $scope.followings = data;
+            // }).then("/get-followers", { cache: false }).success(function (data) {
+            //     console.log("followers: ", data);
+            //     $scope.followers = data;
+            // });
+
+            var profile = $http.get("/profile/" + $routeParams.userName, { cache: false });
+            var followings = $http.get("/get-followings", { cache: false });
+            var followers = $http.get("/get-followers", { cache: false });
+
+            $q.all([profile, followings, followers])
+                .then(function (valueArray) {
+                console.log("data: ", valueArray);
+                    $scope.profileUser = valueArray[0].data;
+                    $scope.followings = valueArray[1].data;
+                    $scope.followers = valueArray[2].data;
+                });
         }
-        else if (view === "feed")
-        {
-            $http.get("/get-posts", {cache: false}).success(function(data) {
+        else if (view === "feed") {
+            $http.get("/get-posts", { cache: false }).success(function (data) {
                 console.dir(data);
                 $scope.posts = data;
                 console.dir(data);

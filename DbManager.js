@@ -385,7 +385,7 @@ module.exports = function (doRunCreateTables = true) {
      * return callback(err, row)
      */
     this.getFollowerListByUser = function (user_name, callback) {
-        db.get(FIND_FOLLOWER_LIST_BY_USER_PS, user_name, (err, rows) => {
+        db.all(FIND_FOLLOWER_LIST_BY_USER_PS, user_name, (err, rows) => {
             if (err || rows == undefined) {
                 callback(err, null);
             } else {
@@ -398,7 +398,7 @@ module.exports = function (doRunCreateTables = true) {
      * return callback(err, row)
      */
     this.getFollowingListByUser = function (user_name, callback) {
-        db.get(FIND_FOLLOWING_LIST_BY_USER_PS, user_name, (err, rows) => {
+        db.all(FIND_FOLLOWING_LIST_BY_USER_PS, user_name, (err, rows) => {
             if (err || rows == undefined) {
                 callback(err, null);
             } else {
