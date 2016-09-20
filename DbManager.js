@@ -56,6 +56,7 @@ const CREATE_POST_PS = "INSERT INTO post " +
     "values ($postDate, $description, $author, $image, $mimeType, $encoding, $fileName, $fileSize)";
 const CREATE_POST_COMMENT_PS = "INSERT INTO post_comment (post_id, username, comment_text, comment_date) values (?, ?, ?, ?)";
 const CREATE_POST_LIKE_PS = "INSERT INTO post_like (post_id, username) values (?, ?)";
+const DELETE_POST_PS = "DELETE FROM post WHERE post_id = ? AND author = ?";
 
 // UPDATE prepare statements
 const UPDATE_USER_PS = "UPDATE user SET first_name = ?, middle_name = ?, last_name = ? WHERE user_name = ?";
@@ -188,6 +189,18 @@ module.exports = function (doRunCreateTables = true) {
             stmt.finalize();
         });
     };
+
+    this.deletePost = function (postId, userName, callback) {
+        db.run(DELETE_POST_PS, postId, userName, function (err, row) {
+            if (err) {
+                callback(err, false);
+            } else if (this.changes === 0) {
+                callback("Cannot find the row with post_id " + postId, false);
+            } else {
+                callback(null, true);
+            }
+        });
+    }
 
     /**
      * Returns binary image data for the specified post
