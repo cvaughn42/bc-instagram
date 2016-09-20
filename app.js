@@ -91,6 +91,19 @@ app.get('/', checkAuth, function (req, res) {
     delete req.session.currentUser;
     res.redirect('/');
 
+}).get('/suggestions/:userName', checkAuth, function (req, res) {
+
+    dbManager.getSuggestions(req.params.userName, function(err, suggestions) {
+        if (err)
+        {
+            res.status(500).send(err);
+        }
+        else
+        {
+            res.send(suggestions);
+        }
+    });
+
 }).get('/post/:postId', checkAuth, function (req, res) {
 
     dbManager.getPostById(req.params.postId, (err, post) => {

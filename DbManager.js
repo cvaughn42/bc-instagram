@@ -18,6 +18,19 @@ const READ_POST_SQL = `SELECT p.post_id, p.post_date, p.description, u.user_name
                        INNER JOIN user AS u
                             ON p.author = u.user_name `;
 
+const READ_SUGGESTION_SQL = `SELECT     u.user_name, 
+                                        u.first_name, 
+                                        u.middle_name, 
+                                        u.last_name, 
+                                        (SELECT group_concat(p.post_id) 
+                                         FROM post AS p
+                                         WHERE p.author = u.user_name 
+                                         ORDER BY p.post_id DESC 
+                                         LIMIT 3) AS post_ids
+                             FROM user AS u `;
+const FIND_SUGGESTIONS_PS = READ_SUGGESTION_SQL + 
+                            'WHERE u.user_name != $userName ';
+
 const FIND_USER_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
 const FIND_USER_BY_USERNAME_PWD_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
 const FIND_POST_BY_ID_PS = READ_POST_SQL + 'WHERE p.post_id = ?';
@@ -70,6 +83,52 @@ module.exports = function (doRunCreateTables = true) {
     this.isInit = function () {
         return this.init;
     }
+
+    this.getSuggestions = function(userName, callback) {
+
+        db.all(FIND_SUGGESTIONS_PS, { $userName: userName }, function(err, rows) {
+
+            if (err)
+            {
+                callback("Unable to get suggestions: " + err, null);
+            }
+            else
+            {
+                var suggestions = [];
+
+                if (rows)
+                {
+                    for (var row of rows)
+                    {
+                        suggestions.push({
+                            user: {
+                                userName: row.user_name,
+                                firstName: row.first_name,
+                                middleName: row.middle_name,
+                                lastName: row.last_name
+                            },
+                            postIds: row.post_ids ? row.post_ids.split(',').sort((a, b) => {
+                                if (a > b)
+                                {
+                                    return -1;
+                                }
+                                else if (a < b)
+                                {
+                                    return 1;
+                                }
+                                else
+                                {
+                                    return 0;
+                                }
+                            }).slice(0, 3) : []
+                        });
+                    }
+                }
+                
+                callback(null, suggestions);
+            }
+        });
+    };
 
     /*
      * return callback(err, row)
