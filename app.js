@@ -7,10 +7,10 @@ var dbManager = require("./DbManager")();
 var path = require('path');
 
 var bodyParser = require('body-parser');
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.use(bodyParser.json());
 
 var session = require('express-session')
 app.use(session({
@@ -157,7 +157,7 @@ app.get('/', checkAuth, function (req, res) {
     });
 
 }).post('/post', checkAuth, upload.single('image'), function (req, res) {
-        
+    
     fs.readFile(req.file.path, function (err, data) {
         if (err) 
         {
@@ -169,7 +169,7 @@ app.get('/', checkAuth, function (req, res) {
                 author: req.session.currentUser.userName,
                 postDate: new Date(),
                 fileName: req.file.originalname,
-                description: req.file.originalname,
+                description: req.body.description,
                 data: data,
                 mimeType: req.file.mimetype, 
                 encoding: req.file.encoding, 

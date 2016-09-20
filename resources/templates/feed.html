@@ -6,6 +6,22 @@
 
         <h1 class="page-header">Feed</h1>
 
+        <div>
+            <form id="imageUploadForm" enctype="multipart/form-data" ng-submit="onClickFileUpload('image', description)">
+                <div>
+                    <label for="image" style="float: left;">Image: &nbsp;&nbsp;&nbsp;</label>
+                    <input type="file" id="image" name="image" value="photo" required="required"/>
+                </div>
+                <div  style="clear:both;"></div>
+                <div>
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" name="description" ng-model="description" required="required" />
+                </div>
+                <div><input type="submit" name="uploadButton" value="Post" /></div>
+            </form>
+        </div>
+        <hr />
+
         <div ng-repeat="post in posts">
             <div><img src="/image/{{ post.post_id }}" style="max-width: 300px;" /></div>
             <div>Description: {{ post.description }}</div>

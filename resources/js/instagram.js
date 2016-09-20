@@ -52,6 +52,19 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         }
     };
 
+    $scope.onClickFileUpload = function(fileInputElementId, description) {
+        var formData = new FormData();
+        formData.append('image', document.getElementById(fileInputElementId).files[0]);
+        formData.append('description', description);
+
+        $http.post("/post", formData, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .success(function (response) { location.reload(true); })
+        .error(function (response) { alert(response); });
+    };
+
     $scope.$on('$viewContentLoaded', function(event) {
 
         var view = $scope.getTemplate($route.current.templateUrl);
@@ -84,11 +97,11 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         {
             $http.get("/get-posts").success(function(data) {
                 $scope.posts = data;
+                console.dir(data);
             });
         }
     });
 });
-
 
 /*
 var loadUserProfile = function (userName) {
