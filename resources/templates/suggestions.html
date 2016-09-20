@@ -6,11 +6,21 @@
 
         <h1 class="page-header">Suggestions</h1>
 
-        <div>
-            <div>{{suggestion.user.userName}}</div>
-            <div>{{suggestion.user.firstName}} {{suggestion.user.lastName}}</div>
-            <div>
-                <img ng-repeat="postId in suggestion.postIds" height="100px" ng-src="/image/{{postId}}" />
+        <div class="well">
+            <div style="display: inline-block;">
+                <h3>{{suggestion.user.userName}}</h3>
+                <div>{{suggestion.user.firstName}} {{suggestion.user.lastName}}</div>
+            </div>
+            <div class="pull-right" style="display: inline-block">
+                <button class="btn btn-outline btn-primary">Follow</button>
+            </div>
+            <div ng-if="suggestion.postIds.length == 0">
+                No Posts
+            </div>
+            <div ng-if="suggestion.postIds.length > 0">
+                <div ng-repeat="postId in suggestion.postIds" class="picture-frame">
+                    <img height="100px" ng-src="/image/{{postId}}" />
+                </div>
             </div>
         </div>
 
