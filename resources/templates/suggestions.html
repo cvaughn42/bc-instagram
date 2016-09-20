@@ -12,7 +12,7 @@
                 <div>{{suggestion.user.firstName}} {{suggestion.user.lastName}}</div>
             </div>
             <div class="pull-right" style="display: inline-block">
-                <button class="btn btn-outline btn-primary">Follow</button>
+                <button class="btn btn-outline btn-primary" ng-click="followUser(suggestion.user.userName)">Follow</button>
             </div>
             <div ng-if="suggestion.postIds.length == 0">
                 No Posts

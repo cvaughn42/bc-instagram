@@ -37,6 +37,18 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
         return path;
     };
 
+    $scope.followUser = function(followingUserName) {
+        $http.post('/follow', {
+            userToFollow: followingUserName
+        }).success(function (data) {
+            $scope.suggestions = $scope.suggestions.filter(function (suggestion) {
+                return suggestion.user.userName !== followingUserName;
+            });
+            console.dir($scope.suggestions);
+        })
+    };
+
+
     /**
      * Tests whether the profile should be loaded as read-only
      */

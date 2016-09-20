@@ -29,7 +29,7 @@ const READ_SUGGESTION_SQL = `SELECT     u.user_name,
                                          LIMIT 3) AS post_ids
                              FROM user AS u `;
 const FIND_SUGGESTIONS_PS = READ_SUGGESTION_SQL + 
-                            'WHERE u.user_name != $userName ';
+                            'WHERE u.user_name != $userName and u.user_name not in (select following_user_name from user_follow where user_name = $userName)';
 
 const FIND_USER_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
 const FIND_USER_BY_USERNAME_PWD_PS = "SELECT user_name, first_name, middle_name, last_name FROM user WHERE user_name = ? and password = ?";
