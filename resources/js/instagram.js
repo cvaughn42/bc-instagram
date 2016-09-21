@@ -12,7 +12,7 @@ app.config(function ($routeProvider) {
     });
 });
 
-app.controller('bc-instagram-controller', function ($scope, $rootScope, $routeParams, $http, $route, $q) {
+app.controller('bc-instagram-controller', function ($scope, $rootScope, $routeParams, $http, $route, $q, $filter) {
     $http.get('/currentUser').success(function (data) {
         $scope.currentUser = data;
         console.dir(data);
@@ -75,9 +75,6 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
             .error(function (response) { alert(response); });
     };
 
-<<<<<<< HEAD
-    $scope.getProfileNotReadOnly = function () {
-=======
     $scope.onClickDeletePost = function(postId) {
         $http.get("/delete-post/" + postId, null)
             .success(function (response) { location.reload(true); })
@@ -85,12 +82,11 @@ app.controller('bc-instagram-controller', function ($scope, $rootScope, $routePa
     };
     
     $scope.getProfileNotReadOnly = function() {
->>>>>>> df8c97693e61a067ae9542f7d96500d9b70d5566
         return !$scope.getProfileReadOnly();
     };
 
     $scope.formatDate = function (dt) {
-        return dt.toString();
+        return $filter('date')(dt, "medium");
     };
 
     $scope.userProfileLink = function (user) {
